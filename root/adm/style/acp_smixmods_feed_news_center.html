@@ -1,0 +1,335 @@
+<!-- INCLUDE overall_header.html -->
+
+<a name="maincontent"></a>
+
+<h1>{L_ACP_SMIXMODS_FEED_NEWS_CENTER} v{SFNC_VERSION}</h1>
+
+<!-- IF ACTION eq manage and not CHOSEN -->
+<table cellspacing="1" style="clear: both;">
+	<col class="row1" /><col class="col1" /><col class="col1" /><col class="col1" /><col class="col1" /><col class="row1" />
+	<thead>
+		<tr>
+			<th>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_NAME}</th>
+			<th>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_LAST_UPDATE}</th>
+			<th>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_ENABLED_POSTING_SHORT}</th>
+			<th>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_ENABLED_DISPLAYING_SHORT}</th>
+			<th>{L_DELETE}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- BEGIN feed_list_row -->
+		<tr>
+			<td>
+				<a href="{feed_list_row.U_MANAGE}" title="{feed_list_row.URL}">{feed_list_row.FEED_NAME}</a>
+			</td>
+			<td style="text-align: center;">
+				{feed_list_row.LAST_UPDATE}
+			</td>
+			<td style="text-align: center;background-color:<!-- IF feed_list_row.ENABLED_POSTING -->green;color:white<!-- ELSE -->#EFB0B2<!-- ENDIF -->;">
+				<!-- IF feed_list_row.ENABLED_POSTING -->{L_YES}<!-- ELSE -->{L_NO}<!-- ENDIF -->
+			</td>
+			<td style="text-align: center;background-color:<!-- IF feed_list_row.ENABLED_DISPLAYING -->green;color:white<!-- ELSE -->#EFB0B2<!-- ENDIF -->;">
+				<!-- IF feed_list_row.ENABLED_DISPLAYING -->{L_YES}<!-- ELSE -->{L_NO}<!-- ENDIF -->
+			</td>
+			<td style="text-align: center;">
+				<a href="{feed_list_row.U_DELETE}" title="{L_DELETE}">{L_DELETE}</a><br />
+			</td>
+		</tr>
+  <!-- END feed_list_row -->
+  </tbody>
+</table>
+<div class="submit-buttons">
+	<a href="{U_NEW}" title="{L_ACP_SMIXMODS_FEED_NEWS_CENTER_ADD_NEW}">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_ADD_NEW}</a>
+</div>
+<!-- ENDIF -->
+
+<!-- IF CHOSEN -->
+<form id="acp_smixmods_feed_news_center" method="post" action="{U_ACTION}">
+	<fieldset>
+		<legend>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_BASIC}</legend>
+		<dl>
+			<dt>
+				<label for="feed_name">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_NAME}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_NAME_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<input name="feed_name" id="feed_name" type="text" maxlength="50" value="{FEED_NAME}" />
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="feed_url">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_URL}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_URL_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<input name="feed_url" id="feed_url" type="text" size="60" maxlength="255" value="{URL}" />
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="feed_type">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_TYPE}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_TYPE_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<select name="feed_type">
+					<option value="rss"<!-- IF FEED_TYPE eq rss --> selected="selected"<!-- ENDIF -->>RSS</option>
+					<option value="atom"<!-- IF FEED_TYPE eq atom --> selected="selected"<!-- ENDIF -->>ATOM</option>
+					<option value="rdf"<!-- IF FEED_TYPE eq rdf --> selected="selected"<!-- ENDIF -->>RDF</option>
+				</select>
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="encoding">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_ENCODING}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_ENCODING_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<input name="encoding" id="encoding" type="text" maxlength="20" value="{ENCODING}" />
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="refresh_after">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_REFRESH_AFTER}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_REFRESH_AFTER_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				{L_ACP_SMIXMODS_FEED_NEWS_CENTER_REFRESH_AFTER_HOURS}
+				<select name="refresh_after_hours">
+					<option value="0"<!-- IF REFRESH_AFTER_HOURS == 0 --> selected="selected"<!-- ENDIF -->>0</option>
+					<option value="1"<!-- IF REFRESH_AFTER_HOURS == 1 --> selected="selected"<!-- ENDIF -->>1</option>
+					<option value="2"<!-- IF REFRESH_AFTER_HOURS == 2 --> selected="selected"<!-- ENDIF -->>2</option>
+					<option value="3"<!-- IF REFRESH_AFTER_HOURS == 3 --> selected="selected"<!-- ENDIF -->>3</option>
+					<option value="4"<!-- IF REFRESH_AFTER_HOURS == 4 --> selected="selected"<!-- ENDIF -->>4</option>
+					<option value="5"<!-- IF REFRESH_AFTER_HOURS == 5 --> selected="selected"<!-- ENDIF -->>5</option>
+					<option value="6"<!-- IF REFRESH_AFTER_HOURS == 6 --> selected="selected"<!-- ENDIF -->>6</option>
+					<option value="7"<!-- IF REFRESH_AFTER_HOURS == 7 --> selected="selected"<!-- ENDIF -->>7</option>
+					<option value="8"<!-- IF REFRESH_AFTER_HOURS == 8 --> selected="selected"<!-- ENDIF -->>8</option>
+					<option value="9"<!-- IF REFRESH_AFTER_HOURS == 9 --> selected="selected"<!-- ENDIF -->>9</option>
+					<option value="10"<!-- IF REFRESH_AFTER_HOURS == 10 --> selected="selected"<!-- ENDIF -->>10</option>
+					<option value="11"<!-- IF REFRESH_AFTER_HOURS == 11 --> selected="selected"<!-- ENDIF -->>11</option>
+					<option value="12"<!-- IF REFRESH_AFTER_HOURS == 12 --> selected="selected"<!-- ENDIF -->>12</option>
+					<option value="13"<!-- IF REFRESH_AFTER_HOURS == 13 --> selected="selected"<!-- ENDIF -->>13</option>
+					<option value="14"<!-- IF REFRESH_AFTER_HOURS == 14 --> selected="selected"<!-- ENDIF -->>14</option>
+					<option value="15"<!-- IF REFRESH_AFTER_HOURS == 15 --> selected="selected"<!-- ENDIF -->>15</option>
+					<option value="16"<!-- IF REFRESH_AFTER_HOURS == 16 --> selected="selected"<!-- ENDIF -->>16</option>
+					<option value="17"<!-- IF REFRESH_AFTER_HOURS == 17 --> selected="selected"<!-- ENDIF -->>17</option>
+					<option value="18"<!-- IF REFRESH_AFTER_HOURS == 18 --> selected="selected"<!-- ENDIF -->>18</option>
+					<option value="19"<!-- IF REFRESH_AFTER_HOURS == 19 --> selected="selected"<!-- ENDIF -->>19</option>
+					<option value="20"<!-- IF REFRESH_AFTER_HOURS == 20 --> selected="selected"<!-- ENDIF -->>20</option>
+					<option value="21"<!-- IF REFRESH_AFTER_HOURS == 21 --> selected="selected"<!-- ENDIF -->>21</option>
+					<option value="22"<!-- IF REFRESH_AFTER_HOURS == 22 --> selected="selected"<!-- ENDIF -->>22</option>
+					<option value="23"<!-- IF REFRESH_AFTER_HOURS == 23 --> selected="selected"<!-- ENDIF -->>23</option>
+					<option value="24"<!-- IF REFRESH_AFTER_HOURS == 24 --> selected="selected"<!-- ENDIF -->>24</option>
+				</select>
+				&nbsp;
+				{L_ACP_SMIXMODS_FEED_NEWS_CENTER_REFRESH_AFTER_MINUTES}
+				<select name="refresh_after_minutes">
+					<option value="0"<!-- IF REFRESH_AFTER_MINUTES == 0 --> selected="selected"<!-- ENDIF -->>00</option>
+					<option value="15"<!-- IF REFRESH_AFTER_MINUTES == 15 --> selected="selected"<!-- ENDIF -->>15</option>
+					<option value="30"<!-- IF REFRESH_AFTER_MINUTES == 30 --> selected="selected"<!-- ENDIF -->>30</option>
+					<option value="45"<!-- IF REFRESH_AFTER_MINUTES == 45 --> selected="selected"<!-- ENDIF -->>45</option>
+					<option value="60"<!-- IF REFRESH_AFTER_MINUTES == 60 --> selected="selected"<!-- ENDIF -->>60</option>
+				</select>
+			</dd>
+		</dl>
+		
+	</fieldset>
+
+	<fieldset>
+		
+		<legend>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTING}</legend>
+
+		<dl>
+			<dt>
+				<label for="enabled_posting">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_ENABLED_POSTING}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_ENABLED_POSTING_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<input type="radio"  name="enabled_posting" value="0"<!-- IF not ENABLED_POSTING --> checked="checked"<!-- ENDIF --> />{L_DISABLED}
+				<input type="radio" name="enabled_posting" value="1"<!-- IF ENABLED_POSTING --> checked="checked"<!-- ENDIF --> />{L_ENABLED}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="posting_limit">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTING_LIMIT}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTING_LIMIT_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<select name="posting_limit">
+					<option value="1"<!-- IF POSTING_LIMIT == 1 --> selected="selected"<!-- ENDIF -->>1</option>
+					<option value="2"<!-- IF POSTING_LIMIT == 2 --> selected="selected"<!-- ENDIF -->>2</option>
+					<option value="3"<!-- IF POSTING_LIMIT == 3 --> selected="selected"<!-- ENDIF -->>3</option>
+					<option value="4"<!-- IF POSTING_LIMIT == 4 --> selected="selected"<!-- ENDIF -->>4</option>
+					<option value="5"<!-- IF POSTING_LIMIT == 5 --> selected="selected"<!-- ENDIF -->>5</option>
+					<option value="6"<!-- IF POSTING_LIMIT == 6 --> selected="selected"<!-- ENDIF -->>6</option>
+					<option value="7"<!-- IF POSTING_LIMIT == 7 --> selected="selected"<!-- ENDIF -->>7</option>
+					<option value="8"<!-- IF POSTING_LIMIT == 8 --> selected="selected"<!-- ENDIF -->>8</option>
+					<option value="9"<!-- IF POSTING_LIMIT == 9 --> selected="selected"<!-- ENDIF -->>9</option>
+				</select>
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="poster_id">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTER_ID}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTER_ID_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<input name="poster_id" id="poster_id" type="text" maxlength="10" value="{POSTER_ID}" />
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="poster_forum_destination_id">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTER_FORUM_DESTINATION_ID}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTER_FORUM_DESTINATION_ID_DESCRIPTION}</span>
+			</dt>
+			<dd>
+                                {POSTER_FORUM_DESTINATION_ID_SELECTBOX}
+<!--				<input name="poster_forum_destination_id" id="poster_forum_destination_id" type="text" maxlength="10" value="{POSTER_FORUM_DESTINATION_ID}" />-->
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="poster_topic_destination_id">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTER_TOPIC_DESTINATION_ID}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTER_TOPIC_DESTINATION_ID_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<input name="poster_topic_destination_id" id="poster_topic_destination_id" type="text" maxlength="10" value="{POSTER_TOPIC_DESTINATION_ID}" disabled="disabled" />
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="template_for_posting">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_TEMPLATE_FOR_POSTING}</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_TEMPLATE_FOR_POSTING_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<textarea id="template_for_posting" name="template_for_posting" rows="5" cols="30">{TEMPLATE_FOR_POSTING}</textarea>
+			</dd>
+		</dl>
+
+	</fieldset>
+
+	<fieldset>
+
+		<legend>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_NEWS_TICKER}</legend>
+
+		<dl>
+			<dt><label for="enabled_displaying">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_ENABLED_DISPLAYING}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_ENABLED_DISPLAYING_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<input type="radio"  name="enabled_displaying" value="0"<!-- IF not ENABLED_DISPLAYING --> checked="checked"<!-- ENDIF --> />{L_DISABLED}
+				<input type="radio" name="enabled_displaying" value="1"<!-- IF ENABLED_DISPLAY --> checked="checked"<!-- ENDIF --> disabled/>{L_ENABLED}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="template_for_displaying">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_TEMPLATE_FOR_DISPLAYING}</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_TEMPLATE_FOR_DISPLAYING_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<textarea id="template_for_displaying" name="template_for_displaying" rows="5" cols="30">{TEMPLATE_FOR_DISPLAYING}</textarea>
+			</dd>
+		</dl>
+
+	</fieldset>
+
+	<p class="submit-buttons">
+		<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+	</p>
+	
+</form>
+<!-- ENDIF -->
+
+<!-- IF ACTION eq config -->
+<form id="acp_smixmods_feed_news_center" method="post" action="{U_ACTION}">
+	<fieldset>
+		<legend>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_BASIC}</legend>
+
+		<dl>
+			<dt>
+				<label for="index_init">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_INDEX_INIT}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_INDEX_INIT_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<input type="radio"  name="index_init" value="0" <!-- IF not INDEX_INIT -->checked<!-- ENDIF --> />{L_DISABLED}
+				<input type="radio" name="index_init" value="1" <!-- IF INDEX_INIT -->checked<!-- ENDIF --> />{L_ENABLED}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="index_posting">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_INDEX_POSTING}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_INDEX_POSTING_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<input type="radio"  name="index_posting" value="0" <!-- IF not INDEX_POSTING -->checked<!-- ENDIF --> />{L_DISABLED}
+				<input type="radio" name="index_posting" value="1" <!-- IF INDEX_POSTING -->checked<!-- ENDIF --> />{L_ENABLED}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="cron_init">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_CRON_INIT}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_CRON_INIT_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<input type="radio"  name="cron_init" value="0" <!-- IF not CRON_INIT -->checked<!-- ENDIF --> />{L_DISABLED}
+				<input type="radio" name="cron_init" value="1" <!-- IF CRON_INIT -->checked<!-- ENDIF --> />{L_ENABLED}
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="cron_posting">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_CRON_POSTING}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_CRON_POSTING_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<input type="radio"  name="cron_posting" value="0" <!-- IF not CRON_POSTING -->checked<!-- ENDIF --> />{L_DISABLED}
+				<input type="radio" name="cron_posting" value="1" <!-- IF CRON_POSTING -->checked<!-- ENDIF --> />{L_ENABLED}
+			</dd>
+		</dl>
+
+                <dl>
+			<dt>
+				<label for="download_function">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_DOWNLOAD_FUNCTION}:</label><br />
+				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_DOWNLOAD_FUNCTION_DESCRIPTION}</span>
+			</dt>
+			<dd>
+				<select name="download_function">
+					<option value="simplexml"<!-- IF DOWNLOAD_FUNCTION eq simplexml --> selected="selected"<!-- ENDIF -->>simplexml</option>
+					<option value="curl"<!-- IF DOWNLOAD_FUNCTION eq curl --> selected="selected"<!-- ENDIF -->>curl</option>
+					<option value="fopen"<!-- IF DOWNLOAD_FUNCTION eq fopen --> selected="selected"<!-- ENDIF -->>fopen</option>
+				</select>
+			</dd>
+		</dl>
+
+	</fieldset>
+
+	<p class="submit-buttons">
+                <input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+	</p>
+
+</form>
+<!-- ENDIF -->
+
+
+<div style="text-align:center;margin:auto;margin-top:30px;">
+	<p style="text-align:center;font-size:0.9em;">The developer of this MOD asks that you help support its continued development by making a small contribution<br />
+		<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=smika%40smika%2enet&item_name=supporting%20development%20of%20smixmods&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF-8">
+			<img src="https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif" alt="Your donation will keep this MOD in development!" />
+		</a>
+	</p>
+</div>
+<!-- INCLUDE overall_footer.html -->
