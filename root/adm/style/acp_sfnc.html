@@ -2,17 +2,17 @@
 
 <a name="maincontent"></a>
 
-<h1>{L_ACP_SMIXMODS_FEED_NEWS_CENTER} v{SFNC_VERSION}</h1>
+<h1>{L_ACP_SFNC} v{SFNC_VERSION}</h1>
 
 <!-- IF ACTION eq manage and not CHOSEN -->
 <table cellspacing="1" style="clear: both;">
 	<col class="row1" /><col class="col1" /><col class="col1" /><col class="col1" /><col class="col1" /><col class="row1" />
 	<thead>
 		<tr>
-			<th>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_NAME}</th>
-			<th>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_LAST_UPDATE}</th>
-			<th>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_ENABLED_POSTING_SHORT}</th>
-			<th>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_ENABLED_DISPLAYING_SHORT}</th>
+			<th>{L_ACP_SFNC_FEED_NAME}</th>
+			<th>{L_ACP_SFNC_LAST_UPDATE}</th>
+			<th>{L_ACP_SFNC_FEED_ENABLED_POSTING_SHORT}</th>
+			<th>{L_ACP_SFNC_FEED_ENABLED_DISPLAYING_SHORT}</th>
 			<th>{L_DELETE}</th>
 		</tr>
 	</thead>
@@ -39,18 +39,18 @@
   </tbody>
 </table>
 <div class="submit-buttons">
-	<a href="{U_NEW}" title="{L_ACP_SMIXMODS_FEED_NEWS_CENTER_ADD_NEW}">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_ADD_NEW}</a>
+	<a href="{U_NEW}" title="{L_ACP_SFNC_ADD_NEW}">{L_ACP_SFNC_ADD_NEW}</a>
 </div>
 <!-- ENDIF -->
 
 <!-- IF CHOSEN -->
-<form id="acp_smixmods_feed_news_center" method="post" action="{U_ACTION}">
+<form id="acp_sfnc" method="post" action="{U_ACTION}">
 	<fieldset>
-		<legend>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_BASIC}</legend>
+		<legend>{L_ACP_SFNC_BASIC}</legend>
 		<dl>
 			<dt>
-				<label for="feed_name">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_NAME}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_NAME_DESCRIPTION}</span>
+				<label for="feed_name">{L_ACP_SFNC_FEED_NAME}:</label><br />
+				<span>{L_ACP_SFNC_FEED_NAME_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<input name="feed_name" id="feed_name" type="text" maxlength="50" value="{FEED_NAME}" />
@@ -59,8 +59,8 @@
 
 		<dl>
 			<dt>
-				<label for="feed_url">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_URL}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_URL_DESCRIPTION}</span>
+				<label for="feed_url">{L_ACP_SFNC_FEED_URL}:</label><br />
+				<span>{L_ACP_SFNC_FEED_URL_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<input name="feed_url" id="feed_url" type="text" size="60" maxlength="255" value="{URL}" />
@@ -69,8 +69,8 @@
 
 		<dl>
 			<dt>
-				<label for="feed_type">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_TYPE}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_TYPE_DESCRIPTION}</span>
+				<label for="feed_type">{L_ACP_SFNC_FEED_TYPE}:</label><br />
+				<span>{L_ACP_SFNC_FEED_TYPE_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<select name="feed_type">
@@ -83,8 +83,8 @@
 
 		<dl>
 			<dt>
-				<label for="encoding">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_ENCODING}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_ENCODING_DESCRIPTION}</span>
+				<label for="encoding">{L_ACP_SFNC_ENCODING}:</label><br />
+				<span>{L_ACP_SFNC_ENCODING_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<input name="encoding" id="encoding" type="text" maxlength="20" value="{ENCODING}" />
@@ -93,11 +93,11 @@
 
 		<dl>
 			<dt>
-				<label for="refresh_after">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_REFRESH_AFTER}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_REFRESH_AFTER_DESCRIPTION}</span>
+				<label for="refresh_after">{L_ACP_SFNC_REFRESH_AFTER}:</label><br />
+				<span>{L_ACP_SFNC_REFRESH_AFTER_DESCRIPTION}</span>
 			</dt>
 			<dd>
-				{L_ACP_SMIXMODS_FEED_NEWS_CENTER_REFRESH_AFTER_HOURS}
+				{L_ACP_SFNC_REFRESH_AFTER_HOURS}
 				<select name="refresh_after_hours">
 					<option value="0"<!-- IF REFRESH_AFTER_HOURS == 0 --> selected="selected"<!-- ENDIF -->>0</option>
 					<option value="1"<!-- IF REFRESH_AFTER_HOURS == 1 --> selected="selected"<!-- ENDIF -->>1</option>
@@ -126,7 +126,7 @@
 					<option value="24"<!-- IF REFRESH_AFTER_HOURS == 24 --> selected="selected"<!-- ENDIF -->>24</option>
 				</select>
 				&nbsp;
-				{L_ACP_SMIXMODS_FEED_NEWS_CENTER_REFRESH_AFTER_MINUTES}
+				{L_ACP_SFNC_REFRESH_AFTER_MINUTES}
 				<select name="refresh_after_minutes">
 					<option value="0"<!-- IF REFRESH_AFTER_MINUTES == 0 --> selected="selected"<!-- ENDIF -->>00</option>
 					<option value="15"<!-- IF REFRESH_AFTER_MINUTES == 15 --> selected="selected"<!-- ENDIF -->>15</option>
@@ -141,12 +141,12 @@
 
 	<fieldset>
 		
-		<legend>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTING}</legend>
+		<legend>{L_ACP_SFNC_POSTING}</legend>
 
 		<dl>
 			<dt>
-				<label for="enabled_posting">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_ENABLED_POSTING}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_ENABLED_POSTING_DESCRIPTION}</span>
+				<label for="enabled_posting">{L_ACP_SFNC_FEED_ENABLED_POSTING}:</label><br />
+				<span>{L_ACP_SFNC_FEED_ENABLED_POSTING_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<input type="radio"  name="enabled_posting" value="0"<!-- IF not ENABLED_POSTING --> checked="checked"<!-- ENDIF --> />{L_DISABLED}
@@ -156,8 +156,8 @@
 
 		<dl>
 			<dt>
-				<label for="posting_limit">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTING_LIMIT}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTING_LIMIT_DESCRIPTION}</span>
+				<label for="posting_limit">{L_ACP_SFNC_POSTING_LIMIT}:</label><br />
+				<span>{L_ACP_SFNC_POSTING_LIMIT_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<select name="posting_limit">
@@ -176,8 +176,8 @@
 
 		<dl>
 			<dt>
-				<label for="poster_id">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTER_ID}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTER_ID_DESCRIPTION}</span>
+				<label for="poster_id">{L_ACP_SFNC_POSTER_ID}:</label><br />
+				<span>{L_ACP_SFNC_POSTER_ID_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<input name="poster_id" id="poster_id" type="text" maxlength="10" value="{POSTER_ID}" />
@@ -186,8 +186,8 @@
 
 		<dl>
 			<dt>
-				<label for="poster_forum_destination_id">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTER_FORUM_DESTINATION_ID}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTER_FORUM_DESTINATION_ID_DESCRIPTION}</span>
+				<label for="poster_forum_destination_id">{L_ACP_SFNC_POSTER_FORUM_DESTINATION_ID}:</label><br />
+				<span>{L_ACP_SFNC_POSTER_FORUM_DESTINATION_ID_DESCRIPTION}</span>
 			</dt>
 			<dd>
                                 {POSTER_FORUM_DESTINATION_ID_SELECTBOX}
@@ -197,8 +197,8 @@
 
 		<dl>
 			<dt>
-				<label for="poster_topic_destination_id">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTER_TOPIC_DESTINATION_ID}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_POSTER_TOPIC_DESTINATION_ID_DESCRIPTION}</span>
+				<label for="poster_topic_destination_id">{L_ACP_SFNC_POSTER_TOPIC_DESTINATION_ID}:</label><br />
+				<span>{L_ACP_SFNC_POSTER_TOPIC_DESTINATION_ID_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<input name="poster_topic_destination_id" id="poster_topic_destination_id" type="text" maxlength="10" value="{POSTER_TOPIC_DESTINATION_ID}" disabled="disabled" />
@@ -207,8 +207,8 @@
 
 		<dl>
 			<dt>
-				<label for="template_for_posting">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_TEMPLATE_FOR_POSTING}</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_TEMPLATE_FOR_POSTING_DESCRIPTION}</span>
+				<label for="template_for_posting">{L_ACP_SFNC_TEMPLATE_FOR_POSTING}</label><br />
+				<span>{L_ACP_SFNC_TEMPLATE_FOR_POSTING_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<textarea id="template_for_posting" name="template_for_posting" rows="5" cols="30">{TEMPLATE_FOR_POSTING}</textarea>
@@ -219,11 +219,11 @@
 
 	<fieldset>
 
-		<legend>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_NEWS_TICKER}</legend>
+		<legend>{L_ACP_SFNC_NEWS_TICKER}</legend>
 
 		<dl>
-			<dt><label for="enabled_displaying">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_ENABLED_DISPLAYING}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_FEED_ENABLED_DISPLAYING_DESCRIPTION}</span>
+			<dt><label for="enabled_displaying">{L_ACP_SFNC_FEED_ENABLED_DISPLAYING}:</label><br />
+				<span>{L_ACP_SFNC_FEED_ENABLED_DISPLAYING_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<input type="radio"  name="enabled_displaying" value="0"<!-- IF not ENABLED_DISPLAYING --> checked="checked"<!-- ENDIF --> />{L_DISABLED}
@@ -233,8 +233,8 @@
 
 		<dl>
 			<dt>
-				<label for="template_for_displaying">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_TEMPLATE_FOR_DISPLAYING}</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_TEMPLATE_FOR_DISPLAYING_DESCRIPTION}</span>
+				<label for="template_for_displaying">{L_ACP_SFNC_TEMPLATE_FOR_DISPLAYING}</label><br />
+				<span>{L_ACP_SFNC_TEMPLATE_FOR_DISPLAYING_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<textarea id="template_for_displaying" name="template_for_displaying" rows="5" cols="30">{TEMPLATE_FOR_DISPLAYING}</textarea>
@@ -254,12 +254,12 @@
 <!-- IF ACTION eq config -->
 <form id="acp_smixmods_feed_news_center" method="post" action="{U_ACTION}">
 	<fieldset>
-		<legend>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_BASIC}</legend>
+		<legend>{L_ACP_SFNC_BASIC}</legend>
 
 		<dl>
 			<dt>
-				<label for="index_init">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_INDEX_INIT}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_INDEX_INIT_DESCRIPTION}</span>
+				<label for="index_init">{L_ACP_SFNC_INDEX_INIT}:</label><br />
+				<span>{L_ACP_SFNC_INDEX_INIT_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<input type="radio"  name="index_init" value="0" <!-- IF not INDEX_INIT -->checked<!-- ENDIF --> />{L_DISABLED}
@@ -269,8 +269,8 @@
 
 		<dl>
 			<dt>
-				<label for="index_posting">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_INDEX_POSTING}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_INDEX_POSTING_DESCRIPTION}</span>
+				<label for="index_posting">{L_ACP_SFNC_INDEX_POSTING}:</label><br />
+				<span>{L_ACP_SFNC_INDEX_POSTING_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<input type="radio"  name="index_posting" value="0" <!-- IF not INDEX_POSTING -->checked<!-- ENDIF --> />{L_DISABLED}
@@ -280,8 +280,8 @@
 
 		<dl>
 			<dt>
-				<label for="cron_init">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_CRON_INIT}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_CRON_INIT_DESCRIPTION}</span>
+				<label for="cron_init">{L_ACP_SFNC_CRON_INIT}:</label><br />
+				<span>{L_ACP_SFNC_CRON_INIT_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<input type="radio"  name="cron_init" value="0" <!-- IF not CRON_INIT -->checked<!-- ENDIF --> />{L_DISABLED}
@@ -291,8 +291,8 @@
 
 		<dl>
 			<dt>
-				<label for="cron_posting">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_CRON_POSTING}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_CRON_POSTING_DESCRIPTION}</span>
+				<label for="cron_posting">{L_ACP_SFNC_CRON_POSTING}:</label><br />
+				<span>{L_ACP_SFNC_CRON_POSTING_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<input type="radio"  name="cron_posting" value="0" <!-- IF not CRON_POSTING -->checked<!-- ENDIF --> />{L_DISABLED}
@@ -302,8 +302,8 @@
 
                 <dl>
 			<dt>
-				<label for="download_function">{L_ACP_SMIXMODS_FEED_NEWS_CENTER_DOWNLOAD_FUNCTION}:</label><br />
-				<span>{L_ACP_SMIXMODS_FEED_NEWS_CENTER_DOWNLOAD_FUNCTION_DESCRIPTION}</span>
+				<label for="download_function">{L_ACP_SFNC_DOWNLOAD_FUNCTION}:</label><br />
+				<span>{L_ACP_SFNC_DOWNLOAD_FUNCTION_DESCRIPTION}</span>
 			</dt>
 			<dd>
 				<select name="download_function">

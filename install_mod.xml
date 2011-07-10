@@ -34,10 +34,10 @@ This is initial release of this new version.]]></author-notes>
 			<file from="root/includes/acp/info/acp_smixmods_feed_news_center.php" to="includes/acp/info/acp_smixmods_feed_news_center.php"/>
 		</copy>
 		<copy>
-			<file from="root/includes/acp/acp_smixmods_feed_news_center.php" to="includes/acp/acp_smixmods_feed_news_center.php"/>
+			<file from="root/includes/acp/acp_sfnc.php" to="includes/acp/acp_smixmods_feed_news_center.php"/>
 		</copy>
 		<copy>
-			<file from="root/includes/mods/smixmods_feed_news_center.class.php" to="includes/mods/smixmods_feed_news_center.class.php"/>
+			<file from="root/includes/mods/sfnc_feed_parser.class.php" to="includes/mods/sfnc_feed_parser.class.php"/>
 		</copy>
 		<copy>
 			<file from="root/language/en/mods/info_acp_smixmods_feed_news_center.php" to="language/en/mods/info_acp_smixmods_feed_news_center.php"/>

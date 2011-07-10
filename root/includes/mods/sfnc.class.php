@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @package smixmods_feed_news_center
+ * @package sfnc
  * @version $Id: $
  * @copyright (c) 2009-2010 Jiri Smika (Smix) http://phpbb3.smika.net
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
@@ -16,7 +16,7 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-class smix_feed_parser
+class sfnc_feed_parser
 {
 	// config
 	private $download_function = 'simplexml';
@@ -68,7 +68,7 @@ class smix_feed_parser
 	{
 		global $cache;
 
-		$cache->_write('smixmods_feed_' . md5($this->url), $this->items, time());
+		$cache->_write('sfnc_feed_' . md5($this->url), $this->items, time());
 
 		// update latest_update info
 		$this->feed_updated();
@@ -84,7 +84,7 @@ class smix_feed_parser
 	{
 		global $cache;
 
-		return $cache->_read('smixmods_feed_' . md5($this->url));
+		return $cache->_read('sfnc_feed_' . md5($this->url));
 	}
 
 	/**
@@ -158,7 +158,7 @@ class smix_feed_parser
 		@curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1);
 
 		//@curl_setopt( $ch, CURLOPT_ENCODING, '');
-		@curl_setopt( $ch, CURLOPT_USERAGENT, 'SmiX.MODs_feed_center'); // TOTHINK changeable via ACP?
+		@curl_setopt( $ch, CURLOPT_USERAGENT, 'SFNC'); // TOTHINK changeable via ACP?
 		
 		// initial connection timeout
 		@curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 5);
@@ -402,8 +402,7 @@ class smix_feed_parser
 				}
 				else
 				{
-					// TODO add lang entry to lang file
-					add_log('critical', 'LOG_ERROR_SMIXMODS_FEED_PARSER_NO_FEED_TYPE', $this->name);
+					add_log('critical', 'LOG_ERROR_SFNC_FEED_PARSER_NO_FEED_TYPE', $this->name);
 				}
 
 				// if download was successful
@@ -417,7 +416,7 @@ class smix_feed_parser
 			else
 			{
 				// TODO add lang entry to lang file
-				add_log('critical', 'LOG_ERROR_SMIX_FEED_PARSER', 'No data downloaded from the feed '.$this->name);
+				add_log('critical', 'LOG_ERROR_SFNC_PARSER', 'No data downloaded from the feed '.$this->name);
 			}
 		}
 		else
@@ -490,7 +489,7 @@ class smix_feed_parser
 	{
 		global $db;
 
-		$sql = 'UPDATE ' . SMIXMODS_FEED_NEWS_CENTER_FEEDS . '
+		$sql = 'UPDATE ' . SFNC_FEEDS . '
 				SET next_update = ' . ( time() + $this->refresh_after ) . '
 				WHERE id = ' . (int) $this->feed_id;
 
@@ -506,7 +505,7 @@ class smix_feed_parser
 	{
 		global $db;
 
-		$sql = 'UPDATE ' . SMIXMODS_FEED_NEWS_CENTER_FEEDS . '
+		$sql = 'UPDATE ' . SFNC_FEEDS . '
 				SET last_update = ' . (time() + 5). '
 				WHERE id = ' . (int) $this->feed_id;
 
@@ -522,7 +521,7 @@ class smix_feed_parser
 	{
 		global $db;
 
-		$sql = 'UPDATE ' . SMIXMODS_FEED_NEWS_CENTER_FEEDS . '
+		$sql = 'UPDATE ' . SFNC_FEEDS . '
 				SET feed_type = "' . strtolower($this->feed_type) . '",
 					encoding = "' . strtolower($this->encoding) . '",
 					available_feed_atributes = "' . implode(',', $this->available_feed_atributes) . '",
@@ -554,7 +553,7 @@ class smix_feed_parser
 					poster_id, poster_forum_destination_id, poster_topic_destination_id, posting_limit,
 					available_feed_atributes, available_item_atributes,
 					enabled_posting, enabled_displaying
-				FROM ' . SMIXMODS_FEED_NEWS_CENTER_FEEDS . '
+				FROM ' . SFNC_FEEDS . '
 				WHERE id = ' . $this->feed_id;
 
 		$result = $db->sql_query($sql);
@@ -769,7 +768,7 @@ class smix_feed_parser
 		if (!$this->cron_init)
 		{
 			$sql = 'SELECT id
-					FROM ' . SMIXMODS_FEED_NEWS_CENTER_FEEDS . '
+					FROM ' . SFNC_FEEDS . '
 					WHERE next_update < ' . time() . '
 						AND (enabled_posting = 1) OR (enabled_displaying = 1)
 					LIMIT 0,1';
@@ -806,7 +805,7 @@ class smix_feed_parser
 		$this->cron_init = true;
 
 		$sql = 'SELECT id
-				FROM ' . SMIXMODS_FEED_NEWS_CENTER_FEEDS . '
+				FROM ' . SFNC_FEEDS . '
 				WHERE (enabled_posting = 1) OR (enabled_displaying = 1)';
 
 		$result	= $db->sql_query($sql);
@@ -835,6 +834,16 @@ class smix_feed_parser
 				}
 			}
 		}
+	}
+	
+	public function acp_init()
+	{
+		global $db;
+		
+		// forces download
+		$this->cron_init = true;
+		
+		// TO_CONTINUE
 	}
 }
 ?>

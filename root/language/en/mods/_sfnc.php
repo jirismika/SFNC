@@ -2,7 +2,7 @@
 /**
  * SmiX.MODs Feed News Center [English]
  *
- * @package smixmods_feed_news_center
+ * @package sfnc
  * @version $Id: $
  * @copyright (c) 2009-2011 Jiri Smika (Smix) http://phpbb3.smika.net
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
@@ -30,9 +30,6 @@ if (empty($lang) || !is_array($lang))
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 
 $lang = array_merge($lang, array(
-
-	// log mesages
-	'LOG_ERROR_SMIXMODS_FEED_PARSER_NO_FEED_TYPE'	=>	'Unable to detect feed type for feed "$s"',
 
 	// hello_world example
     'HELLO'            => 'Hello',

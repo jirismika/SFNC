@@ -1,14 +1,14 @@
 <?php
 /**
  *
- * @package smixmods_feed_news_center
+ * @package sfnc
  * @version $Id: $
  * @copyright (c) 2009-2011 Jiri Smika (Smix) http://phpbb3.smika.net
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
 
-class acp_smixmods_feed_news_center
+class acp_sfnc
 {
     var $u_action;
 
@@ -18,11 +18,11 @@ class acp_smixmods_feed_news_center
         global $config, $cache, $phpbb_root_path, $phpbb_admin_path, $phpEx;
 
 		// TODO rework language file - to this one
-//		$user->add_lang('mods/smixmods_feed_news_center');
+//		$user->add_lang('mods/sfnc');
 
         // Set up the page
-        $this->tpl_name		= 'acp_smixmods_feed_news_center';
-        $this->page_title	= 'ACP_SMIXMODS_FEED_NEWS_CENTER';
+        $this->tpl_name		= 'acp_sfnc';
+        $this->page_title	= 'ACP_SFNC';
 
 		// prepare global data
 
@@ -41,7 +41,7 @@ class acp_smixmods_feed_news_center
 					encoding, enabled_posting, enabled_displaying,
 					template_for_displaying, template_for_posting,
 					poster_id, poster_forum_destination_id, poster_topic_destination_id, posting_limit
-				FROM ' . SMIXMODS_FEED_NEWS_CENTER_FEEDS . '
+				FROM ' . SFNC_FEEDS . '
 				WHERE 1
 				ORDER BY id ASC';
 
@@ -65,21 +65,21 @@ class acp_smixmods_feed_news_center
 				'CHOSEN'	=> ($id) ? true : false,
 				'ACTION'	=> $mode,
 				'SFNC_VERSION'	=> ($config['sfnc_version']) ? $config['sfnc_version'] : '',
-				'U_NEW'	=>append_sid("{$phpbb_admin_path}index.$phpEx", "i=smixmods_feed_news_center&amp;mode=manage&amp;action=new&amp;id=".$next_id),
+				'U_NEW'	=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=sfnc&amp;mode=manage&amp;action=new&amp;id=".$next_id),
 			)
 		);
 
 		if ($action == 'delete')
 		{
-			$sql = 'DELETE FROM ' . SMIXMODS_FEED_NEWS_CENTER_FEEDS . '
+			$sql = 'DELETE FROM ' . SFNC_FEEDS . '
 					WHERE id = ' . $id;
 			
 			if (!($result = $db->sql_query($sql)))
 			{
-				trigger_error($user->lang['ACP_SMIXMODS_FEED_NEWS_CENTER_ACTION_ERROR_DB'] . adm_back_link($this->u_action), E_USER_WARNING);
+				trigger_error($user->lang['ACP_SFNC_ACTION_ERROR_DB'] . adm_back_link($this->u_action), E_USER_WARNING);
 			}
 
-			trigger_error($user->lang['ACP_SMIXMODS_FEED_NEWS_CENTER_ACTION_SUCCESS'] . adm_back_link($this->u_action), E_USER_NOTICE);
+			trigger_error($user->lang['ACP_SFNC_ACTION_SUCCESS'] . adm_back_link($this->u_action), E_USER_NOTICE);
 		}
 
 		switch ($mode)
@@ -105,7 +105,7 @@ class acp_smixmods_feed_news_center
 					// refresh cached configuration
 					$cache->destroy('config');
 					$cache->purge();
-					trigger_error($user->lang['ACP_SMIXMODS_FEED_NEWS_CENTER_ACTION_SUCCESS'] . adm_back_link($this->u_action), E_USER_NOTICE);
+					trigger_error($user->lang['ACP_SFNC_ACTION_SUCCESS'] . adm_back_link($this->u_action), E_USER_NOTICE);
 				}
 				else
 				{
@@ -126,6 +126,7 @@ class acp_smixmods_feed_news_center
 				
 				if (!$id)
 				{
+					// TODO lang string
 					trigger_error('No feed selected! ' . adm_back_link($this->u_action), E_USER_NOTICE);
 				}
 				
@@ -136,7 +137,7 @@ class acp_smixmods_feed_news_center
 					var_dump($list[$id]);
 				}
 				
-				$sfnc = new smix_feed_parser();
+				$sfnc = new sfnc_feed_parser();
 				
 				// TODO we'll need a new public function - dev_download();
 				$sfnc->cron_init();
@@ -161,10 +162,10 @@ class acp_smixmods_feed_news_center
 							'ENABLED_POSTING'	=> $row['enabled_posting'],
 							'ENABLED_DISPLAYING'	=> $row['enabled_displaying'],
 							// times
-							'LAST_UPDATE'	=> ($row['last_update']) ? sprintf($user->lang['ACP_SMIXMODS_FEED_NEWS_CENTER_FEEDS_UPD_BEFORE_HOUR'], round( (time() - $row['last_update']) / 3600) ) : sprintf($user->lang['ACP_SMIXMODS_FEED_NEWS_CENTER_FEEDS_UPD_NEVER']),
+							'LAST_UPDATE'	=> ($row['last_update']) ? sprintf($user->lang['ACP_SFNC_FEEDS_UPD_BEFORE_HOUR'], round( (time() - $row['last_update']) / 3600) ) : sprintf($user->lang['ACP_SFNC_FEEDS_UPD_NEVER']),
 							// links
-							'U_MANAGE' => append_sid("{$phpbb_admin_path}index.$phpEx", "i=smixmods_feed_news_center&amp;mode=manage&amp;action=manage&amp;id=".(int)$row['id']),
-							'U_DELETE' => append_sid("{$phpbb_admin_path}index.$phpEx", "i=smixmods_feed_news_center&amp;mode=manage&amp;action=delete&amp;id=".(int)$row['id']),
+							'U_MANAGE' => append_sid("{$phpbb_admin_path}index.$phpEx", "i=sfnc&amp;mode=manage&amp;action=manage&amp;id=".(int)$row['id']),
+							'U_DELETE' => append_sid("{$phpbb_admin_path}index.$phpEx", "i=sfnc&amp;mode=manage&amp;action=delete&amp;id=".(int)$row['id']),
 						));
 					}
 				}
@@ -189,7 +190,7 @@ class acp_smixmods_feed_news_center
 						$refresh_after_hours = request_var('refresh_after_hours', 0) * 3600;
 						$refresh_after_minutes = request_var('refresh_after_minutes', 0) * 60;
 						$refresh_after = $refresh_after_hours + $refresh_after_minutes;
-						// ... if set to 0 hours & 0 minutes - set defaultly to 1 hour
+						// ... if set to 0 hours & 0 minutes - set to default value 1 hour
 						$refresh_after = ($refresh_after > 0) ? $refresh_after : 3600;
 						$posting_limit = request_var('posting_limit', 1);
 						
@@ -216,25 +217,25 @@ class acp_smixmods_feed_news_center
 							// prepare SQL for different actions
 							if ($action == 'new')
 							{
-								$sql = 'INSERT INTO ' . SMIXMODS_FEED_NEWS_CENTER_FEEDS . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+								$sql = 'INSERT INTO ' . SFNC_FEEDS . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 							}
 							else
 							{
-								$sql = 'UPDATE ' . SMIXMODS_FEED_NEWS_CENTER_FEEDS . '
+								$sql = 'UPDATE ' . SFNC_FEEDS . '
 										SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
 										WHERE id = ' . $id;
 							}
 							
 							if (!($result = $db->sql_query($sql)))
 							{
-								trigger_error($user->lang['ACP_SMIXMODS_FEED_NEWS_CENTER_ACTION_ERROR_DB'] . adm_back_link($this->u_action), E_USER_WARNING);
+								trigger_error($user->lang['ACP_SFNC_ACTION_ERROR_DB'] . adm_back_link($this->u_action), E_USER_WARNING);
 							}
 
-							trigger_error($user->lang['ACP_SMIXMODS_FEED_NEWS_CENTER_ACTION_SUCCESS'] . adm_back_link($this->u_action), E_USER_NOTICE);
+							trigger_error($user->lang['ACP_SFNC_ACTION_SUCCESS'] . adm_back_link($this->u_action), E_USER_NOTICE);
 						}
 						else
 						{
-							trigger_error($user->lang['ACP_SMIXMODS_FEED_NEWS_CENTER_ACTION_ERROR_VALUES'] . adm_back_link($this->u_action), E_USER_WARNING);
+							trigger_error($user->lang['ACP_SFNC_ACTION_ERROR_VALUES'] . adm_back_link($this->u_action), E_USER_WARNING);
 						}
 					}
 					else
@@ -249,9 +250,7 @@ class acp_smixmods_feed_news_center
 
 						foreach ($forum_list as $f_id => $row)
 						{
-							$forum_list_select_box .= '<option value="' . $f_id . '"' . (($selected_forum == $f_id)? ' selected="selected"' : '') .
-								($row['disabled'] ? ' disabled="disabled" class="disabled-option"' : '') .
-								'>' . $row['padding'] . $row['forum_name'] . '</option>';
+							$forum_list_select_box .= '<option value="'.$f_id.'"'.(($selected_forum == $f_id) ? ' selected="selected"' : '').($row['disabled'] ? ' disabled="disabled" class="disabled-option"' : '').'>'.$row['padding'].$row['forum_name'].'</option>';
 						}
 						$forum_list_select_box .= '</select>';
 						
@@ -286,11 +285,12 @@ class acp_smixmods_feed_news_center
 							'POSTER_TOPIC_DESTINATION_ID'	=> isset($list[$id]['poster_topic_destination_id']) ? $list[$id]['poster_topic_destination_id'] : '',
 							'POSTING_LIMIT'	=> isset($list[$id]['posting_limit']) ? $list[$id]['posting_limit'] : 1,
 							// links
-							'U_MANAGE' => append_sid("{$phpbb_admin_path}index.$phpEx", "i=smixmods_feed_news_center&amp;mode=feeds&amp;action=manage&amp;id=".$id),
-							'U_DELETE' => append_sid("{$phpbb_admin_path}index.$phpEx", "i=smixmods_feed_news_center&amp;mode=feeds&amp;action=delete&amp;id=".$id),
+							'U_MANAGE' => append_sid("{$phpbb_admin_path}index.$phpEx", "i=sfnc&amp;mode=feeds&amp;action=manage&amp;id=".$id),
+							'U_DELETE' => append_sid("{$phpbb_admin_path}index.$phpEx", "i=sfnc&amp;mode=feeds&amp;action=delete&amp;id=".$id),
 						));
 					}
 				}
+
 			break;
 		}
 	}

@@ -30,7 +30,7 @@ if(!($user->data['user_type']) == USER_FOUNDER)
 }
 
 // check if constants exists
-if (!defined('SMIXMODS_FEED_NEWS_CENTER_FEEDS'))
+if (!defined('SFNC_FEEDS'))
 {
 	trigger_error('You\'ve didn\'t make all necessary file edits, check it again please.', E_USER_ERROR);
 }
@@ -64,8 +64,8 @@ else
 	// INSTALL latest version
 	// If you have problems with this install script, insert this into db manually
 	$sql_array = array(
-		'DROP TABLE IF EXISTS ' . SMIXMODS_FEED_NEWS_CENTER_FEEDS,
-		'CREATE TABLE ' . SMIXMODS_FEED_NEWS_CENTER_FEEDS . ' (
+		'DROP TABLE IF EXISTS ' . SFNC_FEEDS,
+		'CREATE TABLE ' . SFNC_FEEDS . ' (
 			id int(11) NOT NULL AUTO_INCREMENT,
 			feed_name varchar(255) NOT NULL DEFAULT \'\',
 			url varchar(255) NOT NULL DEFAULT \'\',
@@ -88,7 +88,7 @@ else
 		);',
 
 		// I've decided to skip the default feed, because the settings can be faulty ...
-//		'INSERT INTO ' . SMIXMODS_FEED_NEWS_CENTER_FEEDS . ' (id, feed_name, url, feed_type, next_update, last_update, available_feed_atributes, available_item_atributes, encoding, refresh_after, template_for_displaying, template_for_posting, poster_id, poster_forum_destination_id, poster_topic_destination_id, posting_limit, enabled_posting, enabled_displaying) VALUES (NULL, \'phpBB.com\', \'http://www.phpbb.com/community/feed.php?mode=news\', \'atom\', \'0\', \'0\', \'\', \'\', \'utf-8\', \'7200\', \'\', \'\', \'2\', \'2\', \'0\', \'5\', \'1\', \'0\');',
+//		'INSERT INTO ' . SFNC_FEEDS . ' (id, feed_name, url, feed_type, next_update, last_update, available_feed_atributes, available_item_atributes, encoding, refresh_after, template_for_displaying, template_for_posting, poster_id, poster_forum_destination_id, poster_topic_destination_id, posting_limit, enabled_posting, enabled_displaying) VALUES (NULL, \'phpBB.com\', \'http://www.phpbb.com/community/feed.php?mode=news\', \'atom\', \'0\', \'0\', \'\', \'\', \'utf-8\', \'7200\', \'\', \'\', \'2\', \'2\', \'0\', \'5\', \'1\', \'0\');',
 		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_download_function\', \'simplexml\', \'0\');',
 		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_cron_init\', \'0\', \'1\');',
 		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_cron_posting\', \'0\', \'1\');',

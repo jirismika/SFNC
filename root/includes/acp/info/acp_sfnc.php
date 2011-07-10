@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @package smixmods_feed_news_center
+ * @package sfnc
  * @version $Id: $
  * @copyright (c) 2009-2011 Jiri Smika (Smix) http://phpbb3.smika.net
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
@@ -11,23 +11,23 @@
 /**
 * @package module_install
 */
-class acp_smixmods_feed_news_center_info
+class acp_sfnc_info
 {
     function module()
     {
 		return array(
-			'filename'	=> 'smixmods_feed_news_center',
-			'title'		=> 'ACP_SMIXMODS_FEED_NEWS_CENTER',
+			'filename'	=> 'sfnc',
+			'title'		=> 'ACP_SFNC',
 			'version'	=> '0.3.5',
 			'modes'		=> array(
 				'manage'	=> array(
-					'title' => 'ACP_SMIXMODS_FEED_NEWS_CENTER_FEEDS',
+					'title' => 'ACP_SFNC_FEEDS',
 					'auth'	=> 'acl_a_board',
-					'cat'	=> array('ACP_SMIXMODS_FEED_NEWS_CENTER')),
+					'cat'	=> array('ACP_SFNC')),
 				'config'	=> array(
 					'title'	=> 'ACP_GENERAL_CONFIGURATION',
 					'auth'	=> 'acl_a_board',
-					'cat'	=> array('ACP_SMIXMODS_FEED_NEWS_CENTER')
+					'cat'	=> array('ACP_SFNC')
 				),
             ),
         );
