@@ -4,7 +4,7 @@
  *
  * @package smixmods_feed_news_center
  * @version $Id: $
- * @copyright (c) 2009-2011 Jiri Smika (Smix) http://phpbb3.smika.net
+ * @copyright (c) 2009-2010 Jiri Smika (Smix) http://phpbb3.smika.net
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
