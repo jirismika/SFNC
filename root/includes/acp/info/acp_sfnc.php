@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * @package sfnc
@@ -9,38 +10,41 @@
  */
 
 /**
-* @package module_install
-*/
+ * @package module_install
+ */
 class acp_sfnc_info
 {
-    function module()
-    {
+
+	function module()
+	{
 		return array(
-			'filename'	=> 'sfnc',
-			'title'		=> 'ACP_SFNC',
-			'version'	=> '0.3.5',
-			'modes'		=> array(
-				'manage'	=> array(
+			'filename' => 'sfnc',
+			'title' => 'ACP_SFNC',
+			'version' => '0.3.5',
+			'modes' => array(
+				'manage' => array(
 					'title' => 'ACP_SFNC_FEEDS',
-					'auth'	=> 'acl_a_board',
-					'cat'	=> array('ACP_SFNC')),
-				'config'	=> array(
-					'title'	=> 'ACP_GENERAL_CONFIGURATION',
-					'auth'	=> 'acl_a_board',
-					'cat'	=> array('ACP_SFNC')
+					'auth' => 'acl_a_board',
+					'cat' => array('ACP_SFNC')),
+				'config' => array(
+					'title' => 'ACP_GENERAL_CONFIGURATION',
+					'auth' => 'acl_a_board',
+					'cat' => array('ACP_SFNC')
 				),
-            ),
-        );
+			),
+		);
+	}
 
-    }
+	function install()
+	{
+		
+	}
 
-    function install()
-    {
-    }
-
-    function uninstall()
-    {
-    }
+	function uninstall()
+	{
+		
+	}
 
 }
+
 ?>

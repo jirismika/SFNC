@@ -1,16 +1,16 @@
 <?php
-/**
-*
-* @package contrib
-* @version $Id:
-* @copyright (c) 2009-2011 Jiri Smika (Smix) http://phpbb3.smika.net
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
-*
-*/
 
 /**
-* @ignore
-*/
+ *
+ * @package contrib
+ * @version $Id:
+ * @copyright (c) 2009-2011 Jiri Smika (Smix) http://phpbb3.smika.net
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ *
+ */
+/**
+ * @ignore
+ */
 define('IN_PHPBB', true);
 $phpbb_root_path = '../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
@@ -21,12 +21,12 @@ $user->setup();
 
 $sql_array = array();
 // this release version info
-$version = '0.3.5';
+$version = '0.3.5-dev';
 
 // only admin can install/update this mod - nobody else can run this script
-if(!($user->data['user_type']) == USER_FOUNDER)
+if (!($user->data['user_type']) == USER_FOUNDER)
 {
-	trigger_error('Founder permissions are required to run this script.',  E_USER_ERROR);
+	trigger_error('Founder permissions are required to run this script.', E_USER_ERROR);
 }
 
 // check if constants exists
@@ -51,8 +51,8 @@ if (isset($config['sfnc_version']))
 		{
 			$sql_array[] = 'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_download_function\', \'simplexml\', \'0\');';
 		}
-		
-		$sql_array[] = 'UPDATE ' . CONFIG_TABLE . ' SET config_value = "'.$version.'" WHERE config_name = "sfnc_version"';
+
+		$sql_array[] = 'UPDATE ' . CONFIG_TABLE . ' SET config_value = "' . $version . '" WHERE config_name = "sfnc_version"';
 	}
 	elseif ($version < $config['sfnc_version'])
 	{
@@ -86,7 +86,6 @@ else
 			enabled_displaying int(1) NOT NULL DEFAULT \'0\',
 			PRIMARY KEY (id)
 		);',
-
 		// I've decided to skip the default feed, because the settings can be faulty ...
 //		'INSERT INTO ' . SFNC_FEEDS . ' (id, feed_name, url, feed_type, next_update, last_update, available_feed_atributes, available_item_atributes, encoding, refresh_after, template_for_displaying, template_for_posting, poster_id, poster_forum_destination_id, poster_topic_destination_id, posting_limit, enabled_posting, enabled_displaying) VALUES (NULL, \'phpBB.com\', \'http://www.phpbb.com/community/feed.php?mode=news\', \'atom\', \'0\', \'0\', \'\', \'\', \'utf-8\', \'7200\', \'\', \'\', \'2\', \'2\', \'0\', \'5\', \'1\', \'0\');',
 		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_download_function\', \'simplexml\', \'0\');',
@@ -94,7 +93,7 @@ else
 		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_cron_posting\', \'0\', \'1\');',
 		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_index_init\', \'0\', \'1\');',
 		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_index_posting\', \'0\', \'1\');',
-		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_version\', \''.$version.'\', \'0\');',
+		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_version\', \'' . $version . '\', \'0\');',
 	);
 }
 
@@ -111,11 +110,10 @@ if ($sql_array)
 		$cache->destroy('config');
 	}
 
-	trigger_error('<span style="color:green; font-weight:bold;">Installation of version '.$version.' was successfull</span>');
+	trigger_error('<span style="color:green; font-weight:bold;">Installation of version ' . $version . ' was successfull</span>');
 }
 else
 {
 	trigger_error('Nothing to change in db', E_USER_ERROR);
 }
-
 ?>

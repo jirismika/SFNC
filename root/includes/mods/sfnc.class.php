@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * @package sfnc
@@ -7,57 +8,51 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
-
 /**
-* @ignore
-*/
+ * @ignore
+ */
 if (!defined('IN_PHPBB'))
 {
 	exit;
 }
 
-class sfnc_feed_parser
+class sfnc
 {
+
 	// config
 	private $download_function = 'simplexml';
-
 	// from db
 	private $feed_id = 0;
 	private $feed_type = '';
 	private $feed_name = '';
-	private $encoding = 'UTF-8';	// (if encoding is not parsed, try UTF-8)
+	private $encoding = 'UTF-8'; // (if encoding is not parsed, try UTF-8)
 	private $url = '';
-	private	$refresh_after = 3600;	// time in seconds
+	private $refresh_after = 3600; // time in seconds
 	private $next_update = 0;
 	private $last_update = 0;
-
 	// downloaded data
 	private $data = '';
 	// parsed data array => feed items / entries ...
 	private $items = array();
-
 	// download settings
 	private $enabled_posting = 0;
 	private $enabled_displaying = 0;
-	private $cron_init = false;		// forces download
-	private $cron_posting = false;	// post in cron run
-	private $index_init = true;		// init on index.php
-	private $index_posting = true;	// init on index.php
-
+	private $cron_init = false;  // forces download
+	private $cron_posting = false; // post in cron run
+	private $index_init = true;  // init on index.php
+	private $index_posting = true; // init on index.php
 	// some informations
 	private $channel_info = array();
-	private	$available_feed_atributes = array();
+	private $available_feed_atributes = array();
 	private $available_item_atributes = array();
-
 	// templates
 	private $template_for_posting = '';
 	private $template_for_displaying = '';
-
 	// posting bot
-	private $poster_id = 0;						// 2;
-	private $poster_forum_destination_id = 0;	// 2;
-	private $poster_topic_destination_id = 0;	// 0;
-	private $posting_limit = 3;					// 3;
+	private $poster_id = 0;   // 2;
+	private $poster_forum_destination_id = 0; // 2;
+	private $poster_topic_destination_id = 0; // 0;
+	private $posting_limit = 3;  // 3;
 
 	/**
 	 * Caches feed items
@@ -128,7 +123,7 @@ class sfnc_feed_parser
 		{
 			return simplexml_load_file($this->url, 'SimpleXMLElement', LIBXML_NOCDATA); //
 		}
-		// NOTE this probably isnot any longer required ...
+		// NOTE this probably isn't any longer required ...
 		elseif ($this->download_function == 'curl')
 		{
 			$content = $this->get_file_curl($this->url);
@@ -153,18 +148,17 @@ class sfnc_feed_parser
 	{
 		// initiate and set options
 		$ch = @curl_init($url);
-		@curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
-		@curl_setopt( $ch, CURLOPT_HEADER, 0);
-		@curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1);
+		@curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		@curl_setopt($ch, CURLOPT_HEADER, 0);
+		@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 
 		//@curl_setopt( $ch, CURLOPT_ENCODING, '');
-		@curl_setopt( $ch, CURLOPT_USERAGENT, 'SFNC'); // TOTHINK changeable via ACP?
-		
+		@curl_setopt($ch, CURLOPT_USERAGENT, 'SFNC'); // TOTHINK changeable via ACP?
 		// initial connection timeout
-		@curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 5);
+		@curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 		// setting this to higher means longer time for loading the page for user!
-		@curl_setopt( $ch, CURLOPT_TIMEOUT, 60);
-		@curl_setopt( $ch, CURLOPT_MAXREDIRS, 0);
+		@curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+		@curl_setopt($ch, CURLOPT_MAXREDIRS, 0);
 
 		// get content
 		$content['content'] = @curl_exec($ch);
@@ -186,7 +180,6 @@ class sfnc_feed_parser
 	{
 		$content['content'] = '';
 
-		// else use fopen if possible
 		if ($f = @fopen($url, 'r'))
 		{
 			while (!feof($f))
@@ -207,7 +200,7 @@ class sfnc_feed_parser
 	 */
 	private function html_to_bbcode($string)
 	{
-		$htmltags = array(
+		$html = array(
 			"/\<b\>(.*?)\<\/b\>/is",
 			"/\<i\>(.*?)\<\/i\>/is",
 			"/\<u\>(.*?)\<\/u\>/is",
@@ -218,11 +211,10 @@ class sfnc_feed_parser
 			"/\<br(.*?)\>/is",
 			"/\<strong\>(.*?)\<\/strong\>/is",
 			"/\<a href=\"(.*?)\"(.*?)\>(.*?)\<\/a\>/is",
-
 		);
 
 		// Replace with
-		$bbtags = array(
+		$bb = array(
 			"[b]$1[/b]",
 			"[i]$1[/i]",
 			"[u]$1[/u]",
@@ -235,8 +227,8 @@ class sfnc_feed_parser
 			"[url=$1]$3[/url]",
 		);
 
-		// Replace $htmltags in $text with $bbtags
-		$string = preg_replace($htmltags, $bbtags, $string);
+		// Replace $html in $text with $bb
+		$string = preg_replace($html, $bb, $string);
 
 		// Strip all other HTML tags
 		$string = strip_tags($string);
@@ -275,7 +267,7 @@ class sfnc_feed_parser
 		{
 			foreach ($item as $k => $v)
 			{
-				$this->items[$i][utf8_recode($k, $this->encoding)] = (string)utf8_recode($v, $this->encoding);
+				$this->items[$i][utf8_recode($k, $this->encoding)] = (string) utf8_recode($v, $this->encoding);
 				$this->check_item_atributes($k);
 			}
 			$i++;
@@ -313,7 +305,7 @@ class sfnc_feed_parser
 		{
 			foreach ($item as $k => $v)
 			{
-				$this->items[$i][utf8_recode($k, $this->encoding)] = (string)utf8_recode($v, $this->encoding);
+				$this->items[$i][utf8_recode($k, $this->encoding)] = (string) utf8_recode($v, $this->encoding);
 				$this->check_item_atributes($k);
 			}
 			$i++;
@@ -358,7 +350,7 @@ class sfnc_feed_parser
 
 				foreach ($details as $k => $v)
 				{
-					$this->items[$i][utf8_recode($k, $this->encoding)] = (string)utf8_recode($v, $this->encoding);
+					$this->items[$i][utf8_recode($k, $this->encoding)] = (string) utf8_recode($v, $this->encoding);
 					$this->check_item_atributes($k);
 				}
 				$i++;
@@ -374,7 +366,7 @@ class sfnc_feed_parser
 	private function populate($id)
 	{
 		// get cached data
-		if ( $this->cron_init || ( $this->index_init && ($this->next_update < time() ) ) )
+		if ($this->cron_init || ( $this->index_init && ($this->next_update < time() ) ))
 		{
 			// this feed will be actually checked and updated,
 			// don´t wait until it ends,to prevent multiple loading of the same ...
@@ -416,7 +408,7 @@ class sfnc_feed_parser
 			else
 			{
 				// TODO add lang entry to lang file
-				add_log('critical', 'LOG_ERROR_SFNC_PARSER', 'No data downloaded from the feed '.$this->name);
+				add_log('critical', 'LOG_ERROR_SFNC_PARSER', 'No data downloaded from the feed ' . $this->name);
 			}
 		}
 		else
@@ -433,11 +425,11 @@ class sfnc_feed_parser
 	{
 		global $config;
 
-		$this->download_function =	$config['sfnc_download_function'];
-		$this->cron_init		=	$config['sfnc_cron_init'];
-		$this->cron_posting		=	$config['sfnc_cron_posting'];
-		$this->index_init		=	$config['sfnc_index_init'];
-		$this->index_posting	=	$config['sfnc_index_posting'];
+		$this->download_function = $config['sfnc_download_function'];
+		$this->cron_init = $config['sfnc_cron_init'];
+		$this->cron_posting = $config['sfnc_cron_posting'];
+		$this->index_init = $config['sfnc_index_init'];
+		$this->index_posting = $config['sfnc_index_posting'];
 	}
 
 	private function reset_feed()
@@ -446,7 +438,7 @@ class sfnc_feed_parser
 		$this->feed_id = 0;
 		$this->feed_type = '';
 		$this->feed_name = '';
-		$this->encoding = 'UTF-8';	// if encoding is unknown, try UTF-8 instead
+		$this->encoding = 'UTF-8'; // if encoding is unknown, try UTF-8 instead
 		$this->url = '';
 
 		// setting
@@ -459,7 +451,7 @@ class sfnc_feed_parser
 		$this->items = array();
 
 		// download settings
-		$this->refresh_after = 3600;	// time in seconds
+		$this->refresh_after = 3600; // time in seconds
 		$this->next_update = 0;
 		$this->last_update = 0;
 
@@ -473,11 +465,10 @@ class sfnc_feed_parser
 		$this->template_for_displaying = '';
 
 		// posting bot
-		$this->poster_id = 0;					// 2;
-		$this->poster_forum_destination_id = 0;	// 2;
-		$this->poster_topic_destination_id = 0;	// 2;
-		$this->posting_limit = 1;				// 1
-
+		$this->poster_id = 0;  // 2;
+		$this->poster_forum_destination_id = 0; // 2;
+		$this->poster_topic_destination_id = 0; // 2;
+		$this->posting_limit = 1; // 1
 	}
 
 	/**
@@ -506,7 +497,7 @@ class sfnc_feed_parser
 		global $db;
 
 		$sql = 'UPDATE ' . SFNC_FEEDS . '
-				SET last_update = ' . (time() + 5). '
+				SET last_update = ' . (time() + 5) . '
 				WHERE id = ' . (int) $this->feed_id;
 
 		$db->sql_query($sql);
@@ -618,7 +609,7 @@ class sfnc_feed_parser
 				FROM ' . USERS_TABLE . '
 				WHERE user_id = ' . (int) $this->poster_id;
 
-		$result	= $db->sql_query($sql);
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$row['is_registered'] = true;
 		$db->sql_freeresult($result);
@@ -630,7 +621,7 @@ class sfnc_feed_parser
 		// backward posting (from the oldest to the newest)
 		$i = (sizeof($this->items) > $this->posting_limit) ? $this->posting_limit - 1 : sizeof($this->items);
 		$j = 0;
-		while ($i >= 0 && ( ($this->posting_limit == 0) || ($this->posting_limit > $j) ) )
+		while ($i >= 0 && ( ($this->posting_limit == 0) || ($this->posting_limit > $j) ))
 		{
 			// necessary vars
 			$uid = $bitfield = $options = $poll = '';
@@ -646,14 +637,13 @@ class sfnc_feed_parser
 			// IDEA MANUAL POSTING 
 			//		What about downloading "all" messages and privileged user check the checkbox for messages to post ?
 			//      After automatic check if the feed has a new messages, and it has a new messages, send PM to privileged user(s)
-
 			// check if this topic is not already posted
 			$sql = 'SELECT topic_title
 					FROM ' . TOPICS_TABLE . '
 					WHERE topic_title = "' . $db->sql_escape($subject) . '"
 						AND topic_poster = ' . (int) $this->poster_id;
-			
-			$result	= $db->sql_query($sql);
+
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 
@@ -661,21 +651,19 @@ class sfnc_feed_parser
 			if (strnatcasecmp($row['topic_title'], $subject))
 			{
 				// templates RSS / ATOM has different indexes for messages
-				$temp = ( ($this->feed_type == 'rss') || ($this->feed_type == 'rdf') )? 'description' : 'content';
-				
+				$temp = ( ($this->feed_type == 'rss') || ($this->feed_type == 'rdf') ) ? 'description' : 'content';
+
 				// TODO templates
 				// $this->template $this->templating()
-				$message = $this->feed_name."\n\n".$this->items[$i][$temp];
+				$message = $this->feed_name . "\n\n" . $this->items[$i][$temp];
 
 				// post time - not used in version > 0.3.2 (caused bugs with post sorting in topic and quoting)
 				$post_time = 0;
 				// ATOM entry->updated
 				// RSS item->pubDate
 				// RDF item->dc:date ???
-
 				// do we have a pubDate ? ... post will be posted with this time!
 //				$post_time = ($this->items[$i]['pubDate']) ? strtotime($this->items[$i]['pubDate']) : time();
-
 //				if (($this->feed_type == 'rss') && isset($this->items[$i]['pubDate']))
 //				{
 //					if (($time = strtotime($this->items[$i]['pubDate'])) !== false)
@@ -697,44 +685,37 @@ class sfnc_feed_parser
 //						$post_time = $time;
 //					}
 //				}
-
 				// prepare post data
 				generate_text_for_storage($message, $uid, $bitfield, $options, true, true, true);
 
 				$data = array(
 					// General Posting Settings
-					'forum_id'          => $this->poster_forum_destination_id,
-					'topic_id'          => 0,//$this->poster_topic_destination_id, // temporarily absolutely disabled
-					'icon_id'           => false,
-
+					'forum_id' => $this->poster_forum_destination_id,
+					'topic_id' => 0, //$this->poster_topic_destination_id, // temporarily absolutely disabled
+					'icon_id' => false,
 					// Defining Post Options
-					'enable_bbcode'		=> true,
-					'enable_smilies'    => true,
-					'enable_urls'       => true,
-					'enable_sig'        => true,
-
+					'enable_bbcode' => true,
+					'enable_smilies' => true,
+					'enable_urls' => true,
+					'enable_sig' => true,
 					// Message Body
-					'message'           => $message,
-					'message_md5'		=> md5($message),
-					'bbcode_bitfield'   => $bitfield,
-					'bbcode_uid'        => $uid,
-
+					'message' => $message,
+					'message_md5' => md5($message),
+					'bbcode_bitfield' => $bitfield,
+					'bbcode_uid' => $uid,
 					// Other Options
-					'post_edit_locked'  => 0,
-					'topic_title'       => $subject,
-					'topic_description'	=> '',
-
+					'post_edit_locked' => 0,
+					'topic_title' => $subject,
+					'topic_description' => '',
 					// Email Notification Settings
-					'notify_set'        => false,
-					'notify'            => false,
-					'post_time'         => 0,
-					'forum_name'        => '',
-
+					'notify_set' => false,
+					'notify' => false,
+					'post_time' => 0,
+					'forum_name' => '',
 					// Indexing
-					'enable_indexing'   => true,     // Allow indexing the post? (bool)
-
+					'enable_indexing' => true, // Allow indexing the post? (bool)
 					// 3.0.6+
-					'force_approved_state'  => true,  // Allow the post to be submitted without going into unapproved queue
+					'force_approved_state' => true, // Allow the post to be submitted without going into unapproved queue
 				);
 
 				// submit and approve the post!
@@ -747,14 +728,13 @@ class sfnc_feed_parser
 		}
 
 		// TODO rebuild/sync forums latest topics and post counts
-
 		// redirect to index
 		if (!$this->cron_init)
 		{
 			redirect(generate_board_url());
 		}
-
 	}
+
 	// POSTING BOT MOD [-]
 
 	public function index_init()
@@ -772,7 +752,7 @@ class sfnc_feed_parser
 					WHERE next_update < ' . time() . '
 						AND (enabled_posting = 1) OR (enabled_displaying = 1)
 					LIMIT 0,1';
-			$result	= $db->sql_query($sql);
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			$id = $row['id'];
 
@@ -808,7 +788,7 @@ class sfnc_feed_parser
 				FROM ' . SFNC_FEEDS . '
 				WHERE (enabled_posting = 1) OR (enabled_displaying = 1)';
 
-		$result	= $db->sql_query($sql);
+		$result = $db->sql_query($sql);
 
 		$ids = array();
 
@@ -835,15 +815,20 @@ class sfnc_feed_parser
 			}
 		}
 	}
-	
+
+	/**
+	 * Checks specified URL for feed
+	 */
 	public function acp_init()
 	{
 		global $db;
-		
+
 		// forces download
 		$this->cron_init = true;
-		
+
 		// TO_CONTINUE
 	}
+
 }
+
 ?>
