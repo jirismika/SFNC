@@ -508,7 +508,7 @@ class sfnc
 	private function feed_updated()
 	{
 		global $db;
-return; // DEV_END
+//return; // DEV_END–)
 		$sql = 'UPDATE ' . SFNC_FEEDS . '
 				SET last_update = ' . (time() + 5) . '
 				WHERE id = ' . (int) $this->feed_id;
