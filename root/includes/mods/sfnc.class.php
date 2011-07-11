@@ -359,7 +359,7 @@ class sfnc
 	}
 
 	/**
-	 * Prepare feed items for later use
+	 * Downloads new data if it's time to do it and prepare feed items for later use
 	 *
 	 * @param integer $id feed_id
 	 */
@@ -368,6 +368,18 @@ class sfnc
 		// get cached data
 		if ($this->cron_init || ( $this->index_init && ($this->next_update < time() ) ))
 		{
+			if (!preg_match('/^(http|https):\/\/([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i', $this->url))
+			{
+				// it might be a new feed = no data
+				if (strlen($this->url))
+				{
+					// TODO add lang entry to error log lang file
+					add_log('critical', 'LOG_ERROR_SFNC_ERROR_URL', $this->url);
+				}
+				
+				return;
+			}
+			
 			// this feed will be actually checked and updated,
 			// don´t wait until it ends,to prevent multiple loading of the same ...
 			$this->feed_checked();
@@ -394,7 +406,8 @@ class sfnc
 				}
 				else
 				{
-					add_log('critical', 'LOG_ERROR_SFNC_FEED_PARSER_NO_FEED_TYPE', $this->name);
+					// TODO add lang entry to error log lang file
+					add_log('critical', 'LOG_ERROR_SFNC_NO_FEED_TYPE', $this->name);
 				}
 
 				// if download was successful
@@ -407,7 +420,7 @@ class sfnc
 			}
 			else
 			{
-				// TODO add lang entry to lang file
+				// TODO add lang entry to error log lang file
 				add_log('critical', 'LOG_ERROR_SFNC_PARSER', 'No data downloaded from the feed ' . $this->name);
 			}
 		}
@@ -495,7 +508,7 @@ class sfnc
 	private function feed_updated()
 	{
 		global $db;
-
+return; // DEV_END
 		$sql = 'UPDATE ' . SFNC_FEEDS . '
 				SET last_update = ' . (time() + 5) . '
 				WHERE id = ' . (int) $this->feed_id;
@@ -567,11 +580,11 @@ class sfnc
 			// split values from db ...
 			if (!is_array($this->available_feed_atributes))
 			{
-				$this->available_feed_atributes = split(',', $this->available_feed_atributes);
+				$this->available_feed_atributes = explode(',', $this->available_feed_atributes);
 			}
 			if (!is_array($this->available_item_atributes))
 			{
-				$this->available_item_atributes = split(',', $this->available_item_atributes);
+				$this->available_item_atributes = explode(',', $this->available_item_atributes);
 			}
 
 			// get data from the feed and prepare it for later use if wanted
@@ -819,16 +832,36 @@ class sfnc
 	/**
 	 * Checks specified URL for feed
 	 */
-	public function acp_init()
+	public function acp_init($feed_id)
 	{
 		global $db;
-
+		
 		// forces download
 		$this->cron_init = true;
+		
+		$this->setup_feed($feed_id);
 
-		// TO_CONTINUE
+		$this->populate($this->feed_id);
 	}
 
+	public function get_available_bb()
+	{
+		$bb = array();
+		
+		foreach ($this->available_feed_atributes as $a)
+		{
+			// sfnc_ helps to find the tag
+			$bb[$a] = "[sfnc_feed_".$a."]";
+		}
+		
+		foreach ($this->available_item_atributes as $a)
+		{
+			// sfnc_ helps to find the tag
+			$bb[$a] = "[sfnc_item_".$a."]";
+		}
+		
+		return $bb;
+	}
 }
 
 ?>

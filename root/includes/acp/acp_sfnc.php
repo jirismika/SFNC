@@ -65,8 +65,7 @@ class acp_sfnc
 			'ACTION' => $mode,
 			'SFNC_VERSION' => ($config['sfnc_version']) ? $config['sfnc_version'] : '',
 			'U_NEW' => append_sid("{$phpbb_admin_path}index.$phpEx", "i=sfnc&amp;mode=manage&amp;action=new&amp;id=" . $next_id),
-			)
-		);
+		));
 
 		if ($action == 'delete')
 		{
@@ -114,35 +113,8 @@ class acp_sfnc
 						'CRON_INIT' => $config['sfnc_cron_init'],
 						'CRON_POSTING' => $config['sfnc_cron_posting'],
 						'DOWNLOAD_FUNCTION' => $config['sfnc_download_function'],
-							)
-					);
+					));
 				}
-
-				break;
-
-			// try to download the feed and make setup the feed better
-			case 'download' :
-
-				if (!$id)
-				{
-					// TODO lang string
-					trigger_error('No feed selected! ' . adm_back_link($this->u_action), E_USER_NOTICE);
-				}
-
-				var_dump($list);
-
-				if (isset($list[$id]))
-				{
-					var_dump($list[$id]);
-				}
-
-				$sfnc = new sfnc_feed_parser();
-
-				// TODO we'll need a new public function - dev_download();
-				$sfnc->cron_init();
-
-				die();
-
 
 				break;
 
@@ -156,6 +128,7 @@ class acp_sfnc
 					{
 						$template->assign_block_vars('feed_list_row', array(
 							// main info
+							'URL' => $row['url'],
 							'FEED_ID' => $row['id'],
 							'FEED_NAME' => $row['feed_name'],
 							'ENABLED_POSTING' => $row['enabled_posting'],
@@ -169,7 +142,7 @@ class acp_sfnc
 					}
 				}
 				else
-				{
+				{	
 					// feed IS chosen !
 					if (isset($_POST['submit']) && $_POST['submit'])
 					{
@@ -193,6 +166,7 @@ class acp_sfnc
 						$refresh_after = ($refresh_after > 0) ? $refresh_after : 3600;
 						$posting_limit = request_var('posting_limit', 1);
 
+						// save [+]
 						// if we have all informations ... update
 						if ($feed_name && $feed_url)
 						{
@@ -213,7 +187,6 @@ class acp_sfnc
 								'next_update' => 0, // forces update
 							);
 
-							// prepare SQL for different actions
 							if ($action == 'new')
 							{
 								$sql = 'INSERT INTO ' . SFNC_FEEDS . ' ' . $db->sql_build_array('INSERT', $sql_ary);
@@ -236,15 +209,24 @@ class acp_sfnc
 						{
 							trigger_error($user->lang['ACP_SFNC_ACTION_ERROR_VALUES'] . adm_back_link($this->u_action), E_USER_WARNING);
 						}
+						// save [+]
 					}
 					else
 					{
+						$available_atributes = array();
+
+						$sfnc = new sfnc();
+
+						$sfnc->acp_init($id);
+						
+						$available_atributes = $sfnc->get_available_bb();						
+						
 						// make_forum_select($select_id, $ignore_id, $ignore_acl, $ignore_nonpost, $ignore_emptycat, $only_acl_post, $return_array)
 						$forum_list = make_forum_select(false, false, true, true, true, false, true);
 
 						$selected_forum = isset($list[$id]['poster_forum_destination_id']) ? $list[$id]['poster_forum_destination_id'] : 0;
 
-						// TODO rework this with templating
+						// IDEA - better to rework this with templating
 						$forum_list_select_box = '<select id="poster_forum_destination_id" name="poster_forum_destination_id" size="1">';
 
 						foreach ($forum_list as $f_id => $row)
@@ -270,8 +252,9 @@ class acp_sfnc
 							'REFRESH_AFTER_HOURS' => (isset($list[$id]['refresh_after'])) ? ($list[$id]['refresh_after'] < 3600) ? 0 : floor($list[$id]['refresh_after'] / 3600)  : '',
 							'REFRESH_AFTER_MINUTES' => (isset($list[$id]['refresh_after'])) ? ($list[$id]['refresh_after'] < 3600) ? 0 : ceil($list[$id]['refresh_after'] % 3600 / 60)  : '',
 							// atributes
-							'AVAILABLE_FEED_ATRIBUTES' => isset($list[$id]['available_feed_atributes']) ? $list[$id]['available_feed_atributes'] : '',
-							'AVAILABLE_ITEM_ATRIBUTES' => isset($list[$id]['available_item_atributes']) ? $list[$id]['available_item_atributes'] : '',
+							'AVAILABLE_ATRIBUTES' => implode(', ', $available_atributes),
+//							'AVAILABLE_FEED_ATRIBUTES' => isset($list[$id]['available_feed_atributes']) ? $list[$id]['available_feed_atributes'] : '',
+//							'AVAILABLE_ITEM_ATRIBUTES' => isset($list[$id]['available_item_atributes']) ? $list[$id]['available_item_atributes'] : '',
 							// templates
 							'TEMPLATE_FOR_POSTING' => isset($list[$id]['template_for_posting']) ? $list[$id]['template_for_posting'] : '',
 							'TEMPLATE_FOR_DISPLAYING' => isset($list[$id]['template_for_displaying']) ? $list[$id]['template_for_displaying'] : '',
