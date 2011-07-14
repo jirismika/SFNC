@@ -121,21 +121,28 @@ class sfnc
 	{
 		if ($this->download_function == 'simplexml')
 		{
-			return simplexml_load_file($this->url, 'SimpleXMLElement', LIBXML_NOCDATA); //
+			$content = @simplexml_load_file($this->url, 'SimpleXMLElement', LIBXML_NOCDATA);
 		}
-		// NOTE this probably isn't any longer required ...
 		elseif ($this->download_function == 'curl')
 		{
 			$content = $this->get_file_curl($this->url);
 
-			return $content = simplexml_load_string($content['content']);
+			$content = @simplexml_load_string($content['content']);
 		}
 		else
 		{
 			$content = $this->get_file_fopen($this->url);
 
-			return $content = simplexml_load_string($content['content']);
+			$content = @simplexml_load_string($content['content']);
 		}
+		
+		if (!$content)
+		{
+			// TODO add lang entry to error log lang file
+			add_log('critical', 'LOG_ERROR_SFNC_ERROR_URL', $this->url);	
+		}
+		
+		return $content;
 	}
 
 	/**
@@ -371,7 +378,7 @@ class sfnc
 			if (!preg_match('/^(http|https):\/\/([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i', $this->url))
 			{
 				// it might be a new feed = no data
-				if (strlen($this->url))
+				if ($this->url)
 				{
 					// TODO add lang entry to error log lang file
 					add_log('critical', 'LOG_ERROR_SFNC_ERROR_URL', $this->url);
@@ -421,7 +428,7 @@ class sfnc
 			else
 			{
 				// TODO add lang entry to error log lang file
-				add_log('critical', 'LOG_ERROR_SFNC_PARSER', 'No data downloaded from the feed ' . $this->name);
+				add_log('critical', 'LOG_ERROR_SFNC_PARSER', 'No data downloaded from the feed ' . $this->url);
 			}
 		}
 		else
@@ -508,7 +515,7 @@ class sfnc
 	private function feed_updated()
 	{
 		global $db;
-//return; // DEV_END–)
+
 		$sql = 'UPDATE ' . SFNC_FEEDS . '
 				SET last_update = ' . (time() + 5) . '
 				WHERE id = ' . (int) $this->feed_id;
@@ -699,6 +706,8 @@ class sfnc
 //					}
 //				}
 				// prepare post data
+				// -> functions_content.php
+				// generate_text_for_storage(&$text, &$uid, &$bitfield, &$flags, $allow_bbcode = false, $allow_urls = false, $allow_smilies = false)
 				generate_text_for_storage($message, $uid, $bitfield, $options, true, true, true);
 
 				$data = array(
@@ -732,6 +741,8 @@ class sfnc
 				);
 
 				// submit and approve the post!
+				// functions_posting.php
+				// submit_post($mode, $subject, $username, $topic_type, &$poll, &$data, $update_message = true, $update_search_index = true)
 				submit_post('post', $subject, $user->data['username'], POST_NORMAL, $poll, $data, true, true);
 				// for development reasons, comment the previous line
 			}
@@ -861,6 +872,11 @@ class sfnc
 		}
 		
 		return $bb;
+	}
+	
+	private function use_template($type = 'post')
+	{
+		
 	}
 }
 

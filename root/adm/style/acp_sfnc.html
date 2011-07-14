@@ -228,7 +228,7 @@
 			</dt>
 			<dd>
 				<input type="radio"  name="enabled_displaying" value="0"<!-- IF not ENABLED_DISPLAYING --> checked="checked"<!-- ENDIF --> />{L_DISABLED}
-				<input type="radio" name="enabled_displaying" value="1"<!-- IF ENABLED_DISPLAYING --> checked="checked"<!-- ENDIF --> disabled/>{L_ENABLED}
+				<input type="radio" name="enabled_displaying" value="1"<!-- IF ENABLED_DISPLAYING --> checked="checked"<!-- ENDIF --> />{L_ENABLED}
 			</dd>
 		</dl>
 
@@ -238,6 +238,7 @@
 				<span>{L_ACP_SFNC_TEMPLATE_FOR_DISPLAYING_DESCRIPTION}</span>
 			</dt>
 			<dd>
+                <p>{L_ACP_SFNC_AVAILABLE_ATRIBUTES} : {AVAILABLE_ATRIBUTES}</p>
 				<textarea id="template_for_displaying" name="template_for_displaying" rows="5" cols="30">{TEMPLATE_FOR_DISPLAYING}</textarea>
 			</dd>
 		</dl>

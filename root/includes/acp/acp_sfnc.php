@@ -269,8 +269,7 @@ class acp_sfnc
 							// links
 							'U_MANAGE' => append_sid("{$phpbb_admin_path}index.$phpEx", "i=sfnc&amp;mode=feeds&amp;action=manage&amp;id=" . $id),
 							'U_DELETE' => append_sid("{$phpbb_admin_path}index.$phpEx", "i=sfnc&amp;mode=feeds&amp;action=delete&amp;id=" . $id),
-							)
-						);
+						));
 					}
 				}
 

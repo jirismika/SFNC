@@ -23,6 +23,26 @@ $sql_array = array();
 // this release version info
 $version = '0.3.5-dev';
 
+// determine best function
+if (function_exists('@simplexml_load_file'))
+{
+	$default_function = 'simplexml';
+}
+elseif (function_exists('curl_init'))
+{
+	$default_function = 'curl';
+}
+elseif (function_exists('fopen'))
+{
+	$default_function = 'fopen';
+}
+else
+{
+	// TODO add lang file string
+	trigger_error('Not usable PHP function for downloading the feed - PHP5, simplexml, cURL or fopen is required to run this .MOD', E_USER_ERROR);
+}
+
+
 // only admin can install/update this mod - nobody else can run this script
 if (!($user->data['user_type']) == USER_FOUNDER)
 {
@@ -49,7 +69,7 @@ if (isset($config['sfnc_version']))
 	{
 		if ($config['sfnc_version'] < '0.3.2')
 		{
-			$sql_array[] = 'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_download_function\', \'simplexml\', \'0\');';
+			$sql_array[] = 'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_download_function\', \''.$default_function.'\', \'0\');';
 		}
 
 		$sql_array[] = 'UPDATE ' . CONFIG_TABLE . ' SET config_value = "' . $version . '" WHERE config_name = "sfnc_version"';
@@ -88,7 +108,7 @@ else
 		);',
 		// I've decided to skip the default feed, because the settings can be faulty ...
 //		'INSERT INTO ' . SFNC_FEEDS . ' (id, feed_name, url, feed_type, next_update, last_update, available_feed_atributes, available_item_atributes, encoding, refresh_after, template_for_displaying, template_for_posting, poster_id, poster_forum_destination_id, poster_topic_destination_id, posting_limit, enabled_posting, enabled_displaying) VALUES (NULL, \'phpBB.com\', \'http://www.phpbb.com/community/feed.php?mode=news\', \'atom\', \'0\', \'0\', \'\', \'\', \'utf-8\', \'7200\', \'\', \'\', \'2\', \'2\', \'0\', \'5\', \'1\', \'0\');',
-		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_download_function\', \'simplexml\', \'0\');',
+		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_download_function\', \''.$default_function.'\', \'0\');',
 		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_cron_init\', \'0\', \'1\');',
 		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_cron_posting\', \'0\', \'1\');',
 		'INSERT INTO ' . CONFIG_TABLE . ' VALUES (\'sfnc_index_init\', \'0\', \'1\');',
