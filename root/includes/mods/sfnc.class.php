@@ -477,7 +477,7 @@ class sfnc
 
 		// some informations
 		$this->channel_info = array();
-		$this->available_feeed_atributes = array();
+		$this->available_feed_atributes = array();
 		$this->available_item_atributes = array();
 
 		// templates
@@ -504,7 +504,7 @@ class sfnc
 				SET next_update = ' . ( time() + $this->refresh_after ) . '
 				WHERE id = ' . (int) $this->feed_id;
 
-		$db->sql_query($sql);
+//		$db->sql_query($sql);
 	}
 
 	/**
@@ -520,7 +520,7 @@ class sfnc
 				SET last_update = ' . (time() + 5) . '
 				WHERE id = ' . (int) $this->feed_id;
 
-		$db->sql_query($sql);
+//		$db->sql_query($sql);
 	}
 
 	/**
@@ -758,9 +758,15 @@ class sfnc
 			redirect(generate_board_url());
 		}
 	}
-
 	// POSTING BOT MOD [-]
 
+	
+	
+	/**
+	 * Inits the sfnc on index.php of phpBB
+	 * 
+	 * @global db $db 
+	 */
 	public function index_init()
 	{
 		global $db;
@@ -797,7 +803,9 @@ class sfnc
 	}
 
 	/**
-	 * Updates all feeds
+	 * Cron init - updates all feeds
+	 *
+	 * @global db $db 
 	 */
 	public function cron_init()
 	{
@@ -841,20 +849,28 @@ class sfnc
 	}
 
 	/**
-	 * Checks specified URL for feed
+	 * ACP init - inits specified feed id
+	 *
+	 * @global db $db
+	 * @param int $id feed id
 	 */
-	public function acp_init($feed_id)
+	public function acp_init($id)
 	{
 		global $db;
 		
 		// forces download
 		$this->cron_init = true;
 		
-		$this->setup_feed($feed_id);
+		$this->setup_feed($id);
 
 		$this->populate($this->feed_id);
 	}
 
+	/**
+	 * Returns available sfnc BB codes for actually initiated feed
+	 * 
+	 * @return array 
+	 */
 	public function get_available_bb()
 	{
 		$bb = array();
@@ -874,9 +890,83 @@ class sfnc
 		return $bb;
 	}
 	
-	private function use_template($type = 'post')
+	/**
+	 * Apply specified template on message 
+	 * 
+	 * @param array $text message data for templating
+	 * @param string $type post/display
+	 * @return type 
+	 */
+	private function apply_template($text, $type = 'post')
 	{
+		$template = 'template_for_'.$type.'ing';
+	
+		// apply sfnc bb
+		$bb_available = $this->get_available_bb(); // TODO make it a $this->bb_available
 		
+		$message = $this->$template;
+
+		// apply bb
+		foreach ($bb_available as $id => $bb)
+		{
+			$type = (strpos($bb, 'feed') !== false) ? 'feed' : 'item';
+			
+			// if bb is available in template
+			if (strpos($message, $bb) !== false && $type == 'item')
+			{				
+				if (isset($text[$id]))
+				{
+					$message = str_replace("[sfnc_".$type.'_'.$id."]", $text[$id], $message);
+				}
+			}
+			else // it's a feed attribute
+			{
+				// TODO check if this depends on feed type
+				$message = str_replace("[sfnc_".$type.'_'.$id."]", $this->data->$id, $message);
+			}
+		}
+
+		return $message;
+	}
+	
+	/**
+	 * Returns a data array filled with feed items for ticker
+	 * 
+	 * @param int $id
+	 * @return array 
+	 */
+	public function get_ticker_data($id = 0)
+	{	
+		if (!$id)
+		{
+			return;
+		}
+
+		$this->setup_feed($id);
+
+		$this->populate($id);
+		
+		if (!$this->data)
+		{
+			return;
+		}
+		
+		// make returning array
+		$ticker_data = array();
+		$type = 'display';
+		$template = 'template_for_'.$type.'ing';
+		
+		// basic info
+		$ticker_data['id'] = $this->feed_id;
+		$ticker_data['name'] = $this->feed_name;
+		$ticker_data['url'] = $this->url;
+		
+		foreach ($this->items as $txt)
+		{
+			$ticker_data['items'][] = $this->apply_template($txt, 'display');
+		}
+		
+		return $ticker_data;
 	}
 }
 
