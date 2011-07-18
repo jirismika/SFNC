@@ -373,7 +373,7 @@ class sfnc
 	private function populate($id)
 	{
 		// get cached data
-		if ($this->cron_init || ( $this->index_init && ($this->next_update < time() ) ))
+		if ($this->cron_init || ($this->index_init && ($this->next_update < time()) ))
 		{
 			if (!preg_match('/^(http|https):\/\/([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i', $this->url))
 			{
@@ -942,6 +942,7 @@ class sfnc
 			return;
 		}
 
+		// TODO always use cached data, never init downloading
 		$this->setup_feed($id);
 
 		$this->populate($id);

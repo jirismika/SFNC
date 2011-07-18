@@ -13,7 +13,7 @@ $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 
-/* This page will be called with AJAX 
+/* This page will be called with AJAX
  * 
  * TODO :
  * - will return data for feed
@@ -32,16 +32,21 @@ $auth->acl($user->data);
 // possibly only a dev file !
 $sfnc = new sfnc();
 
-$feed_id = 1; // dev hardcoded setup ... TODO request_var(...
+$feed_id = 1; // dev hardcoded setup ... TODO request_var('feed_id',0)
 $feed_data = '';
 $feed_data = $sfnc->get_ticker_data($feed_id);
 
 if ($feed_data)
 {
-	print_r($feed_data);
+	// id, name, url, items
+	echo "<ul>";
+	foreach ($feed_data['items'] as $item)
+	echo "\t<li>" . $item . "</li>\n";
+	echo "</ul>";
 }
 else
 {
+	// TODO lang string
 	echo 'No data for this feed';
 }
 ?>
