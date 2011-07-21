@@ -39,9 +39,11 @@ $feed_data = $sfnc->get_ticker_data($feed_id);
 if ($feed_data)
 {
 	// id, name, url, items
-	echo "<ul>";
+	echo '<ul style="list-style:none;">';
 	foreach ($feed_data['items'] as $item)
-	echo "\t<li>" . $item . "</li>\n";
+	{
+		echo "\t<li>" . $item . "</li>\n";
+	}
 	echo "</ul>";
 }
 else
