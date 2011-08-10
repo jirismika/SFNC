@@ -85,15 +85,13 @@ $lang = array_merge($lang, array(
 	'ACP_SFNC_ACTION_SUCCESS' => 'Action was performed successfully',
 	'ACP_SFNC_ACTION_ERROR_VALUES' => 'Not enough informations were posted',
 	// configuration
-	'ACP_SFNC_INDEX_INIT' => 'Index init',
-	'ACP_SFNC_INDEX_INIT_DESCRIPTION' => 'If enabled, index.php will init downloading of ONE feed',
-	'ACP_SFNC_INDEX_POSTING' => 'Index posting',
-	'ACP_SFNC_INDEX_POSTING_DESCRIPTION' => 'If enabled, after initiation on index.php, content will be posted to forum',
-	'ACP_SFNC_CRON_INIT' => 'Cron init',
-	'ACP_SFNC_CRON_INIT_DESCRIPTION' => 'Enable, if you´ll use a CRON job for updating the feeds (update_feeds.php in phpBB ROOT directory). If enabled, index.php will never init downloading or posting of feed and ALL feeds will be updated.',
-	'ACP_SFNC_CRON_POSTING' => 'Cron posting',
-	'ACP_SFNC_CRON_POSTING_DESCRIPTION' => 'If enabled, after initiation on cron.php, content will be posted to forum',
-	'ACP_SFNC_CRON_POSTING_LIMIT' => 'Posting limit',
-	'ACP_SFNC_CRON_POSTING_LIMIT_DESCRIPTION' => 'How many items should be checked for posting',
+	'ACP_SFNC_INIT_ON_INDEX' => 'Index init',
+	'ACP_SFNC_INIT_ON_INDEX_DESCRIPTION' => 'If enabled, index.php will init downloading of ONE feed',
+	'ACP_SFNC_POSTING_ON_INDEX' => 'Index posting',
+	'ACP_SFNC_POSTING_ON_INDEX_DESCRIPTION' => 'If enabled, after initiation on index.php, content will be posted to forum',
+	'ACP_SFNC_INIT_ON_CRON' => 'Cron init',
+	'ACP_SFNC_INIT_ON_CRON_DESCRIPTION' => 'Enable, if you´ll use a CRON job for updating the feeds (update_feeds.php in phpBB ROOT directory). If enabled, index.php will never init downloading or posting of feed and ALL feeds will be updated.',
+	'ACP_SFNC_POSTING_ON_CRON' => 'Cron posting',
+	'ACP_SFNC_POSTING_ON_CRON_DESCRIPTION' => 'If enabled, after initiation on cron.php, content will be posted to forum',
 ));
 ?>

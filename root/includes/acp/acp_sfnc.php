@@ -36,7 +36,7 @@ class acp_sfnc
 		$list = array();
 		$sql = 'SELECT id, feed_name, url, feed_type,
 					next_update, last_update, refresh_after,
-					available_feed_atributes, available_item_atributes,
+					available_feed_attributes, available_item_attributes,
 					encoding, enabled_posting, enabled_displaying,
 					template_for_displaying, template_for_posting,
 					poster_id, poster_forum_destination_id, poster_topic_destination_id, posting_limit
@@ -87,17 +87,17 @@ class acp_sfnc
 				if (isset($_POST['submit']))
 				{
 					// Set up general vars
-					$cron_init = request_var('cron_init', 0);
-					$cron_posting = request_var('cron_posting', 0);
-					$index_init = request_var('index_init', 0);
-					$index_posting = request_var('index_posting', 0);
+					$cron_init = request_var('init_on_cron', 0);
+					$cron_posting = request_var('posting_on_cron', 0);
+					$index_init = request_var('init_on_index', 0);
+					$index_posting = request_var('posting_on_cron', 0);
 					$download_function = request_var('download_function', 'simplexml');
 
 					// update config
-					set_config('sfnc_index_init', ($cron_init) ? 0 : $index_init);  // if cron enabled, no index inits
-					set_config('sfnc_index_posting', ($cron_init) ? 0 : $index_posting); // if cron enabled, no index inits
-					set_config('sfnc_cron_init', $cron_init);
-					set_config('sfnc_cron_posting', $cron_posting);
+					set_config('sfnc_init_on_index', ($init_on_cron) ? 0 : $init_on_index);  // if cron enabled, no index inits
+					set_config('sfnc_posting_on_index', ($init_on_cron) ? 0 : $posting_on_index); // if cron enabled, no index inits
+					set_config('sfnc_init_on_cron', $init_on_cron);
+					set_config('sfnc_posting_on_cron', $posting_on_cron);
 					set_config('sfnc_download_function', $download_function);
 
 					// refresh cached configuration
@@ -108,10 +108,10 @@ class acp_sfnc
 				else
 				{
 					$template->assign_vars(array(
-						'INDEX_INIT' => $config['sfnc_index_init'],
-						'INDEX_POSTING' => $config['sfnc_index_posting'],
-						'CRON_INIT' => $config['sfnc_cron_init'],
-						'CRON_POSTING' => $config['sfnc_cron_posting'],
+						'INIT_ON_INDEX' => $config['sfnc_init_on_index'],
+						'POSTING_ON_INDEX' => $config['sfnc_posting_on_index'],
+						'INIT_ON_CRON' => $config['sfnc_init_on_cron'],
+						'POSTING_ON_CRON' => $config['sfnc_posting_on_cron'],
 						'DOWNLOAD_FUNCTION' => $config['sfnc_download_function'],
 					));
 				}
@@ -213,13 +213,11 @@ class acp_sfnc
 					}
 					else
 					{
-						$available_atributes = array();
-
 						$sfnc = new sfnc();
 
 						$sfnc->acp_init($id);
 						
-						$available_atributes = $sfnc->get_available_bb();						
+						$available_attributes = $sfnc->get_available_bb();						
 						
 						// make_forum_select($select_id, $ignore_id, $ignore_acl, $ignore_nonpost, $ignore_emptycat, $only_acl_post, $return_array)
 						$forum_list = make_forum_select(false, false, true, true, true, false, true);
@@ -251,10 +249,10 @@ class acp_sfnc
 							// recount back refresh_after to hours & minutes
 							'REFRESH_AFTER_HOURS' => (isset($list[$id]['refresh_after'])) ? ($list[$id]['refresh_after'] < 3600) ? 0 : floor($list[$id]['refresh_after'] / 3600)  : '',
 							'REFRESH_AFTER_MINUTES' => (isset($list[$id]['refresh_after'])) ? ($list[$id]['refresh_after'] < 3600) ? 0 : ceil($list[$id]['refresh_after'] % 3600 / 60)  : '',
-							// atributes
-							'AVAILABLE_ATRIBUTES' => implode(', ', $available_atributes),
-//							'AVAILABLE_FEED_ATRIBUTES' => isset($list[$id]['available_feed_atributes']) ? $list[$id]['available_feed_atributes'] : '',
-//							'AVAILABLE_ITEM_ATRIBUTES' => isset($list[$id]['available_item_atributes']) ? $list[$id]['available_item_atributes'] : '',
+							// attributes
+							'AVAILABLE_ATRIBUTES' => implode(', ', $available_attributes),
+//							'AVAILABLE_FEED_ATTRIBUTES' => isset($list[$id]['available_feed_attributes']) ? $list[$id]['available_feed_attributes'] : '',
+//							'AVAILABLE_ITEM_ATTRIBUTES' => isset($list[$id]['available_item_attributes']) ? $list[$id]['available_item_attributes'] : '',
 							// templates
 							'TEMPLATE_FOR_POSTING' => isset($list[$id]['template_for_posting']) ? $list[$id]['template_for_posting'] : '',
 							'TEMPLATE_FOR_DISPLAYING' => isset($list[$id]['template_for_displaying']) ? $list[$id]['template_for_displaying'] : '',
@@ -273,7 +271,7 @@ class acp_sfnc
 					}
 				}
 
-				break;
+			break;
 		}
 	}
 

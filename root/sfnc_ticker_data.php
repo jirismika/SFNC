@@ -20,13 +20,14 @@ include($phpbb_root_path . 'common.' . $phpEx);
  * - if it is in forum :
  *	   - check if exists any forum assigned to this feed
  *     - check user permissions, if he has the permissions for viewing that forum
- *     - must add global view (viewable without permissions)
+ *     - add global view (viewable without permissions)
  *	   - this forum might be also disabled for viewing the feed
  *	   - else show one random feed data which is
  */
 
 // Start session management
 $user->session_begin();
+
 $auth->acl($user->data);
 
 // possibly only a dev file !
