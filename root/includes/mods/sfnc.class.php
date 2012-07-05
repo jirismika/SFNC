@@ -18,6 +18,7 @@ if (!defined('IN_PHPBB'))
 
 class sfnc
 {
+
 	// config
 	private $download_function = 'simplexml';
 	// from db
@@ -33,19 +34,17 @@ class sfnc
 	private $data = '';
 	// parsed data array => feed items / entries ...
 	private $items = array();
-	private $items_old = array();
+	// download settings
 	private $enabled_posting = 0;
 	private $enabled_displaying = 0;
-	// init settings
-	private $ticker_init = false;
-	private $init_on_cron = false;  // forces download
-	private $posting_on_cron = false; // post in cron run
-	private $init_on_index = true;  // init on index.php
-	private $posting_on_index = true; // init on index.php
+	private $cron_init = false;  // forces download
+	private $cron_posting = false; // post in cron run
+	private $index_init = true;  // init on index.php
+	private $index_posting = true; // init on index.php
 	// some informations
 	private $channel_info = array();
-	private $available_feed_attributes = array();
-	private $available_item_attributes = array();
+	private $available_feed_atributes = array();
+	private $available_item_atributes = array();
 	// templates
 	private $template_for_posting = '';
 	private $template_for_displaying = '';
@@ -65,9 +64,6 @@ class sfnc
 		global $cache;
 
 		$cache->_write('sfnc_feed_' . md5($this->url), $this->items, time());
-		
-		// dev
-		$cache->_write('sfnc_feed_complete' . md5($this->url), $this->data, time());
 
 		// update latest_update info
 		$this->feed_updated();
@@ -93,11 +89,11 @@ class sfnc
 	 */
 	private function check_feed_atributes($index)
 	{
-		$available_attributes = ($this->available_feed_attributes) ? array_flip($this->available_feed_attributes) : array();
+		$available_attributes = ($this->available_feed_atributes) ? array_flip($this->available_feed_atributes) : array();
 
 		if (!isset($available_attributes[$index]))
 		{
-			$this->available_feed_attributes[] = $index;
+			$this->available_feed_atributes[] = $index;
 		}
 	}
 
@@ -106,20 +102,20 @@ class sfnc
 	 *
 	 * @param string $index
 	 */
-	private function check_item_attributes($index)
+	private function check_item_atributes($index)
 	{
-		$available_attributes = ($this->available_item_attributes) ? array_flip($this->available_item_attributes) : array();
+		$available_attributes = ($this->available_item_atributes) ? array_flip($this->available_item_atributes) : array();
 
 		if (!isset($available_attributes[$index]))
 		{
-			$this->available_item_attributes[] = $index;
+			$this->available_item_atributes[] = $index;
 		}
 	}
 
 	/**
 	 * Gets data from URL
 	 *
-	 * @return mixed
+	 * @return xml
 	 */
 	private function get_file()
 	{
@@ -133,7 +129,7 @@ class sfnc
 
 			$content = @simplexml_load_string($content['content']);
 		}
-		else // fopen
+		else
 		{
 			$content = $this->get_file_fopen($this->url);
 
@@ -144,8 +140,6 @@ class sfnc
 		{
 			// TODO add lang entry to error log lang file
 			add_log('critical', 'LOG_ERROR_SFNC_ERROR_URL', $this->url);
-
-			$content = array();
 		}
 
 		return $content;
@@ -226,7 +220,7 @@ class sfnc
 			"/\<a href=\"(.*?)\"(.*?)\>(.*?)\<\/a\>/is",
 		);
 
-		// replace with
+		// Replace with
 		$bb = array(
 			"[b]$1[/b]",
 			"[i]$1[/i]",
@@ -240,10 +234,10 @@ class sfnc
 			"[url=$1]$3[/url]",
 		);
 
-		// replace $html in $text with $bb
+		// Replace $html in $text with $bb
 		$string = preg_replace($html, $bb, $string);
 
-		// strip all other HTML tags
+		// Strip all other HTML tags
 		$string = strip_tags($string);
 
 		return $string;
@@ -281,7 +275,45 @@ class sfnc
 			foreach ($item as $k => $v)
 			{
 				$this->items[$i][utf8_recode($k, $this->encoding)] = (string) utf8_recode($v, $this->encoding);
-				$this->check_item_attributes($k);
+				$this->check_item_atributes($k);
+			}
+			$i++;
+		}
+	}
+
+	/**
+	 * Is downloaded feed in RDF format?
+	 *
+	 * @param xml object $xml
+	 * @return bool
+	 */
+	private function is_rdf()
+	{
+		return ($this->data->item) ? true : false;
+	}
+
+	/**
+	 * Main parsing function for RDF format
+	 */
+	private function parse_rdf()
+	{
+		// list all channel tags, which are available
+		foreach ($this->data->channel as $k => $v)
+		{
+			foreach ($v as $at => $av)
+			{
+				$this->check_feed_atributes($at);
+			}
+		}
+
+		$i = 0;
+		// list all item tags, which are available
+		foreach ($this->data->item as $item)
+		{
+			foreach ($item as $k => $v)
+			{
+				$this->items[$i][utf8_recode($k, $this->encoding)] = (string) utf8_recode($v, $this->encoding);
+				$this->check_item_atributes($k);
 			}
 			$i++;
 		}
@@ -326,48 +358,10 @@ class sfnc
 				foreach ($details as $k => $v)
 				{
 					$this->items[$i][utf8_recode($k, $this->encoding)] = (string) utf8_recode($v, $this->encoding);
-					$this->check_item_attributes($k);
+					$this->check_item_atributes($k);
 				}
 				$i++;
 			}
-		}
-	}
-	
-	/**
-	 * Is downloaded feed in RDF format?
-	 *
-	 * @param xml object $xml
-	 * @return bool
-	 */
-	private function is_rdf()
-	{
-		return ($this->data->item) ? true : false;
-	}
-
-	/**
-	 * Main parsing function for RDF format
-	 */
-	private function parse_rdf()
-	{
-		// list all channel tags, which are available
-		foreach ($this->data->channel as $k => $v)
-		{
-			foreach ($v as $at => $av)
-			{
-				$this->check_feed_attributes($at);
-			}
-		}
-
-		$i = 0;
-		// list all item tags, which are available
-		foreach ($this->data->item as $item)
-		{
-			foreach ($item as $k => $v)
-			{
-				$this->items[$i][utf8_recode($k, $this->encoding)] = (string) utf8_recode($v, $this->encoding);
-				$this->check_item_attributes($k);
-			}
-			$i++;
 		}
 	}
 
@@ -379,7 +373,7 @@ class sfnc
 	private function populate($id)
 	{
 		// get cached data
-		if (($this->init_on_cron || ($this->init_on_index && ($this->next_update < time()) ) ) )//&& !$this->ticker_init)
+		if ($this->cron_init || ( $this->index_init && ($this->next_update < time() ) ))
 		{
 			if (!preg_match('/^(http|https):\/\/([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i', $this->url))
 			{
@@ -394,16 +388,10 @@ class sfnc
 			}
 
 			// this feed will be actually checked and updated,
-			// don´t wait until it ends, to prevent multiple loading of the same ...
+			// don´t wait until it ends,to prevent multiple loading of the same ...
 			$this->feed_checked();
 
 			$this->data = $this->get_file($this->url);
-			
-			// dev ticker
-//			if (!$this->data)
-//			{
-//				$this->data = @simplexml_load_string($this->cache_load_feed_complete());
-//			}
 
 			// switch parsing by data type
 			if ($this->data)
@@ -458,10 +446,10 @@ class sfnc
 		global $config;
 
 		$this->download_function = $config['sfnc_download_function'];
-		$this->init_on_cron = $config['sfnc_cron_init'];
-		$this->posting_on_cron = $config['sfnc_cron_posting'];
-		$this->init_on_index = $config['sfnc_index_init'];
-		$this->posting_on_index = $config['sfnc_index_posting'];
+		$this->cron_init = $config['sfnc_cron_init'];
+		$this->cron_posting = $config['sfnc_cron_posting'];
+		$this->index_init = $config['sfnc_index_init'];
+		$this->index_posting = $config['sfnc_index_posting'];
 	}
 
 	private function reset_feed()
@@ -481,7 +469,6 @@ class sfnc
 		$this->data = '';
 		// parsed data array => feed items / entries ...
 		$this->items = array();
-		$this->items_old = array();
 
 		// download settings
 		$this->refresh_after = 3600; // time in seconds
@@ -490,8 +477,8 @@ class sfnc
 
 		// some informations
 		$this->channel_info = array();
-		$this->available_feed_attributes = array();
-		$this->available_item_attributes = array();
+		$this->available_feed_atributes = array();
+		$this->available_item_atributes = array();
 
 		// templates
 		$this->template_for_posting = '';
@@ -548,8 +535,8 @@ class sfnc
 		$sql = 'UPDATE ' . SFNC_FEEDS . '
 				SET feed_type = "' . strtolower($this->feed_type) . '",
 					encoding = "' . strtolower($this->encoding) . '",
-					available_feed_atributes = "' . implode(',', $this->available_feed_attributes) . '",
-					available_item_atributes = "' . implode(',', $this->available_item_attributes) . '"
+					available_feed_atributes = "' . implode(',', $this->available_feed_atributes) . '",
+					available_item_atributes = "' . implode(',', $this->available_item_atributes) . '"
 				WHERE id = ' . (int) $this->feed_id;
 
 		$db->sql_query($sql);
@@ -557,7 +544,7 @@ class sfnc
 
 	/**
 	 * Sets settings for selected feed
-	 * 
+	 *
 	 * @global global $db
 	 * @param integer $feed_id
 	 */
@@ -598,13 +585,13 @@ class sfnc
 			}
 
 			// split values from db ...
-			if (!is_array($this->available_feed_attributes))
+			if (!is_array($this->available_feed_atributes))
 			{
-				$this->available_feed_attributes = explode(',', $this->available_feed_attributes);
+				$this->available_feed_atributes = explode(',', $this->available_feed_atributes);
 			}
-			if (!is_array($this->available_item_attributes))
+			if (!is_array($this->available_item_atributes))
 			{
-				$this->available_item_attributes = explode(',', $this->available_item_attributes);
+				$this->available_item_atributes = explode(',', $this->available_item_atributes);
 			}
 
 			// get data from the feed and prepare it for later use if wanted
@@ -667,7 +654,7 @@ class sfnc
 			// TODO remake the check, if this post/topic is in db ... post if not
 			// NOTE some news has a same repetitive name/title, with actual simple check for topic_title/subject => they'll never be posted :-/
 			// NOTE ... not all feeds has a pubDate or similar time announcing tag :-/
-			// IDEA MANUAL POSTING 
+			// IDEA MANUAL POSTING
 			//		What about downloading "all" messages and privileged user check the checkbox for messages to post ?
 			//      After automatic check if the feed has a new messages, and it has a new messages, send PM to privileged user(s)
 			// check if this topic is not already posted
@@ -681,26 +668,24 @@ class sfnc
 			$db->sql_freeresult($result);
 
 			// Do we have a new item to post ?
-			// IDEA do this check already a few steps before this - at the begining :
-			//	load old & cached data (possible problem, cache time?, do not cache data, if )
-			//	download fresh data
-			//	check if it's the same as the old data
-			//		if doesn't exists fresh data in old stored, do not continue to post (get a number of new posts?)
-			//  ... on this place ... do not continue checking when we knew there is only a few new posts
-			if (strnatcasecmp($row['topic_title'], $subject))
+			//if (strnatcasecmp($row['topic_title'], $subject))
+			if (true)
 			{
+		/*
 				// templates RSS / ATOM has different indexes for messages
 				$temp = ( ($this->feed_type == 'rss') || ($this->feed_type == 'rdf') ) ? 'description' : 'content';
-
-				// TODO templates
-				// $this->template $this->templating()
 				$message = $this->feed_name . "\n\n" . $this->items[$i][$temp];
+		 */
+				// TODO templates
+				// $this->template $this->templating() // [$temp]
+				$message = $this->apply_template($this->items[$i]); //$this->feed_name . "\n\n" . $this->items[$i][$temp];
 
 				// post time - not used in version > 0.3.2 (caused bugs with post sorting in topic and quoting)
 				$post_time = 0;
 				// ATOM entry->updated
 				// RSS item->pubDate
 				// RDF item->dc:date ???
+
 				// do we have a pubDate ? ... post will be posted with this time!
 //				$post_time = ($this->items[$i]['pubDate']) ? strtotime($this->items[$i]['pubDate']) : time();
 //				if (($this->feed_type == 'rss') && isset($this->items[$i]['pubDate']))
@@ -724,6 +709,7 @@ class sfnc
 //						$post_time = $time;
 //					}
 //				}
+
 				// prepare post data
 				// -> functions_content.php
 				// generate_text_for_storage(&$text, &$uid, &$bitfield, &$flags, $allow_bbcode = false, $allow_urls = false, $allow_smilies = false)
@@ -772,20 +758,21 @@ class sfnc
 
 		// TODO rebuild/sync forums latest topics and post counts
 		// redirect to index
-		if (!$this->init_on_cron)
+		if (!$this->cron_init)
 		{
 			redirect(generate_board_url());
 		}
 	}
-
 	// POSTING BOT MOD [-]
+
+
 
 	/**
 	 * Inits the sfnc on index.php of phpBB
-	 * 
-	 * @global db $db 
+	 *
+	 * @global db $db
 	 */
-	public function init_on_index()
+	public function index_init()
 	{
 		global $db;
 
@@ -793,7 +780,7 @@ class sfnc
 
 		// initiated on index.php
 		// update feed, only if .MOD is not set to run in cron mode
-		if (!$this->init_on_cron)
+		if (!$this->cron_init)
 		{
 			$sql = 'SELECT id
 					FROM ' . SFNC_FEEDS . '
@@ -808,7 +795,7 @@ class sfnc
 
 			if ($id)
 			{
-				if ($this->posting_on_index)
+				if ($this->index_posting)
 				{
 					$this->setup_posting($id);
 				}
@@ -823,24 +810,24 @@ class sfnc
 	/**
 	 * Cron init - updates all feeds
 	 *
-	 * @global db $db 
+	 * @global db $db
 	 */
-	public function init_on_cron()
+	public function cron_init()
 	{
 		global $db;
 
 		$this->setup();
 
 		// forces download
-		$this->init_on_cron = true;
+		$this->cron_init = true;
+
+		$ids = array();
 
 		$sql = 'SELECT id
 				FROM ' . SFNC_FEEDS . '
 				WHERE (enabled_posting = 1) OR (enabled_displaying = 1)';
 
 		$result = $db->sql_query($sql);
-
-		$ids = array();
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -853,7 +840,7 @@ class sfnc
 		{
 			foreach ($ids as $id)
 			{
-				if ($this->posting_on_cron)
+				if ($this->cron_posting)
 				{
 					$this->setup_posting($id);
 				}
@@ -874,10 +861,8 @@ class sfnc
 	 */
 	public function acp_init($id)
 	{
-		global $db;
-
 		// forces download
-		$this->init_on_cron = true;
+		$this->cron_init = true;
 
 		$this->setup_feed($id);
 
@@ -886,136 +871,117 @@ class sfnc
 
 	/**
 	 * Returns available sfnc BB codes for actually initiated feed
-	 * 
-	 * @return array 
+	 *
+	 * @return array
 	 */
 	public function get_available_bb()
 	{
 		$bb = array();
 
-		foreach ($this->available_feed_attributes as $a)
+		foreach ($this->available_feed_atributes as $a)
 		{
-			// sfnc_ helps to find the tag
-			$bb[$a] = "[sfnc_feed_" . $a . "]";
+			// don´t show item as available for templates
+			if ($a != 'item' && $a != 'items')
+			{
+				// sfnc_ helps to find the tag
+				$bb[$a] = "[sfnc_feed_".$a."]";
+			}
+
+			// feed name is always available
+			$bb['feed_name'] = "[sfnc_feed_name]";
 		}
 
-		foreach ($this->available_item_attributes as $a)
+		foreach ($this->available_item_atributes as $a)
 		{
 			// sfnc_ helps to find the tag
-			$bb[$a] = "[sfnc_item_" . $a . "]";
+			$bb[$a] = "[sfnc_item_".$a."]";
 		}
 
 		return $bb;
 	}
 
 	/**
-	 * Apply specified template on message 
-	 * 
+	 * Apply specified template on message
+	 *
 	 * @param array $text message data for templating
 	 * @param string $type post/display
-	 * @return type 
+	 * @return type
 	 */
 	private function apply_template($text, $type = 'post')
 	{
-		$dev = array();
-		$bb_available = $this->get_available_bb();
-		print_r($bb_available);
-		
-		$template = 'template_for_' . $type . 'ing';
-		$message = $this->$template;
-		
-		foreach ($bb_available as $id => $bb)
-		{
-			$data_source = (strpos($bb, 'feed') !== false) ? 'feed' : 'item';
+		$template = 'template_for_'.$type.'ing';
 
-			if (isset($text[$id]))
-			{
-				var_dump($text[$id]);
-				echo '<hr>';
-//				$dev[$data_source."|".$id] = str_replace("[sfnc_" . $data_source . '_' . $id . "]", $text[$id], $message);
-				$dev[$data_source."|".$id] = $text[$id];
-			}
-			elseif (isset($this->data->$id))
-			{
-				var_dump($this->data->$id);
-				echo '<hr>';
-//				$dev[$data_source."|".$id] = str_replace("[sfnc_" . $data_source . '_' . $id . "]", $this->data->$id, $message);
-				$dev[$data_source."|".$id] = $this->data->$id;
-			}
-			elseif (isset($this->$id))
-			{
-				var_dump($this->$id);
-				echo '<hr>';
-//				$dev[$data_source."|".$id] = str_replace("[sfnc_" . $data_source . '_' . $id . "]", $this->$id, $message);
-				$dev[$data_source."|".$id] = $this->$id;
-			}
-			else
-			{
-				$dev[$data_source."|".$id] = 'Nenalezena náhrada za '.$data_source.'|'.$id;
-			}
+		$message = $this->$template;
+
+		if (!$message)
+		{
+			// TODO return "default" template or default error message???
+			return '';
 		}
-		print_r($text);
-		echo "\n<hr>\n";
-		print_r($dev);
-		echo "\n<hr>\n";
-		print_r($this->data->link->attributes()->href);
-		echo "\n<hr>\n";
-		print_r($this->items->author->attributes());
-		echo "\n<hr>\n";
-		print_r($this->items->category->attributes());
-		die();
-		
-		
-		$template = 'template_for_' . $type . 'ing';
 
-		// apply sfnc bb
-		$bb_available = $this->get_available_bb(); // TODO make it a $this->bb_available
-
-		$message = $this->$template;
-
-		// apply bb
-		foreach ($bb_available as $id => $bb)
+		foreach ($this->get_available_bb() as $id => $bb)
 		{
-			$data_source = (strpos($bb, 'feed') !== false) ? 'feed' : 'item';
+			// is it feed or item attribute we are searching?
+			$type = (strpos($bb, 'feed') !== false) ? 'feed' : 'item';
 
 			// if bb is available in template
-			if (strpos($message, $bb) !== false && $data_source == 'item')
+			if (strpos($message, $bb) !== false && $type == 'item')
 			{
 				if (isset($text[$id]))
 				{
-					$message = str_replace("[sfnc_" . $data_source . '_' . $id . "]", $text[$id], $message);
+					$message = str_replace("[sfnc_".$type.'_'.$id."]", $text[$id], $message);
 				}
-				else
+			}
+			elseif ($type == 'feed') // it's a feed attribute
+			{
+				if ($id == 'feed_name')
 				{
-					// TODO add error log message
-					echo 'Nenalezena náhrada za '.$data_source . '|'.$id.'<br>';
+					$message = str_replace("[sfnc_feed_name]", $this->feed_name, $message);
 				}
-			}
-			// it's a feed attribute ?
-			elseif (isset($this->data->$id))
-			{
-				$message = str_replace("[sfnc_" . $data_source . '_' . $id . "]", $this->data->$id, $message);
-			}
-			elseif (isset($this->$id))
-			{
-				$message = str_replace("[sfnc_" . $data_source . '_' . $id . "]", $this->$id, $message);
-			}
-			else
-			{
-				// TODO add error log message 
-				echo 'Nenalezena náhrada za '.$data_source.'|'.$id.'<br>';
-				$message = str_replace("[sfnc_" . $data_source . '_' . $id . "]", 'nenalezena náhrada za '.$type.'|'.$id, $message);
+
+				// damn, this also depends on a feed type :-(
+				if ($this->feed_type == 'rss')
+				{
+					if (isset($this->data->channel->$id))
+					{
+						// channel image
+						if ($id == 'image')
+						{
+							$message = str_replace("[sfnc_".$type.'_'.$id."]", isset($this->data->channel->$id->url) ? '[img]'.$this->data->channel->$id->url.'[/img]' : '', $message);
+						}
+						else
+						{
+							// TODO there might be more work on this :-/
+							$message = str_replace("[sfnc_".$type.'_'.$id."]", isset($this->data->channel->$id[0]) ? $this->data->channel->$id[0] : isset($this->data->channel->$id) ? $this->data->channel->$id : '', $message);
+						}
+					}
+				}
+				elseif ($this->feed_type == 'rdf')
+				{
+					if (isset($this->data->channel->$id))
+					{
+						// channel image
+						if ($id == 'image')
+						{
+							$message = str_replace("[sfnc_".$type.'_'.$id."]", isset($this->data->channel->$id->url) ? '[img]'.$this->data->channel->$id->url.'[/img]' : '', $message);
+						}
+					}
+				}
+				elseif ($this->feed_type == 'atom')
+				{
+					$message = str_replace("[sfnc_".$type.'_'.$id."]", isset($this->data->$id) ? $this->data->$id : '', $message);
+				}
 			}
 		}
-		
+
 		return $message;
 	}
 
 	/**
 	 * Returns a data array filled with feed items for ticker
-	 * 
+	 *
 	 * @param int $id
-	 * @return array 
+	 * @return array
 	 */
 	public function get_ticker_data($id = 0)
 	{
@@ -1026,12 +992,8 @@ class sfnc
 
 		$this->setup_feed($id);
 
-		$this->ticker_init = true;
-		
 		$this->populate($id);
 
-		// TOTHINK - save parsed messages to cache??
-		
 		if (!$this->data)
 		{
 			return;
@@ -1040,33 +1002,18 @@ class sfnc
 		// make returning array
 		$ticker_data = array();
 		$type = 'display';
-		$template = 'template_for_' . $type . 'ing';
+		$template = 'template_for_'.$type.'ing';
 
 		// basic info
 		$ticker_data['id'] = $this->feed_id;
 		$ticker_data['name'] = $this->feed_name;
 		$ticker_data['url'] = $this->url;
 
-		// dev template
-		$this->template_for_displaying = '[sfnc_feed_subtitle] &bull; <a href="[sfnc_item_link]">[sfnc_item_title]</a>';
-
-		if ($this->items)
+		foreach ($this->items as $txt)
 		{
-			foreach ($this->items as $txt)
-			{
-				$ticker_data['items'][] = $this->apply_template($txt, 'display');
-			}
-		}
-		else
-		{
-			// TODO lang string
-			// dev hardcoded
-			$ticker_data['items'][] = 'No data for feed '.$ticker_data['id'].' - '.$ticker_data['name'];
+			$ticker_data['items'][] = $this->apply_template($txt, 'display');
 		}
 
-		echo implode(',', $this->available_feed_attributes);
-		echo implode(',', $this->available_item_attributes);
-		
 		return $ticker_data;
 	}
 }

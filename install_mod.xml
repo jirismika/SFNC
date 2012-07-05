@@ -50,7 +50,7 @@ This is initial release of this new version.]]></author-notes>
 				<find><![CDATA[// Set PHP error handler to ours
 set_error_handler(defined('PHPBB_MSG_HANDLER') ? PHPBB_MSG_HANDLER : 'msg_handler');]]></find>
 				<action type="before-add"><![CDATA[// SmiX.MODs feed news center [+]
-include($phpbb_root_path . 'includes/mods/smixmods_feed_news_center.class.' . $phpEx);
+include($phpbb_root_path . 'includes/mods/sfnc/sfnc.class.' . $phpEx);
 // SmiX.MODs feed news center [-]]]></action>
 			</edit>
 		</open>
@@ -72,7 +72,7 @@ $smix_feed_parser->index_init();
 			<edit>
 				<find><![CDATA[// Additional tables]]></find>
 				<action type="after-add"><![CDATA[// SmiX.MODs feed news center [+]
-define('SMIXMODS_FEED_NEWS_CENTER_FEEDS', $table_prefix . 'smixmods_feed_news_center');
+define('SFNC_FEEDS', $table_prefix . 'smixmods_feed_news_center');
 // SmiX.MODs feed news center [-]]]></action>
 			</edit>
 		</open>
@@ -98,7 +98,7 @@ After running the install.php script you can delete the contrib directory.
     Do it again and select “General configuration” from the Module drop-down menu and click “Go”.
     Then click “Enable” on the Module.
     Browse to ACP > .MODs > Created category and set up everything as you want ...
-    
+
 Required ACP permissions are Board administration ...]]></diy-instructions>
 	</action-group>
 </mod>
