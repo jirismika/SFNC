@@ -20,8 +20,9 @@ $auth->acl($user->data);
 $user->setup();
 
 $sql_array = array();
+
 // this release version info
-$version = '0.3.5-dev';
+$version = '0.4.0';
 
 // determine the best possible function
 if (function_exists('simplexml_load_file'))
@@ -39,7 +40,7 @@ elseif (function_exists('fopen'))
 else
 {
     // TODO add lang file string
-    trigger_error('Not usable PHP function for downloading the feed - PHP5, simplexml, cURL or fopen is required to run this .MOD', E_USER_ERROR);
+    trigger_error('Not usable PHP function for downloading the feed - simplexml, cURL or fopen is required to run this .MOD and none was d', E_USER_ERROR);
 }
 
 
@@ -52,7 +53,7 @@ if (!($user->data['user_type']) == USER_FOUNDER)
 // check if constants exists
 if (!defined('SFNC_FEEDS'))
 {
-    trigger_error('Please follow all install instructions from install_mod.xml than run this install script again please.', E_USER_ERROR);
+    trigger_error('Please follow all install instructions from install_mod.xml file and run this install script again please.', E_USER_ERROR);
 }
 
 // is sfnc already installed ?
@@ -128,9 +129,10 @@ if ($sql_array)
 		}
 		// refresh cached config
 		$cache->destroy('config');
+		//$cache->purge();
 	}
 
-	trigger_error('<span style="color:green; font-weight:bold;">Installation of version ' . $version . ' was successfull</span>');
+	trigger_error('<span style="color:green; font-weight:bold;">Installation of version ' . $version . ' was successfull</span><br /><img src="http://phpbb3.smika.net/sfnc.png?install=' . $version . '" alt="SFNC latest version" />');
 }
 else
 {

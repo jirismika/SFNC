@@ -2,54 +2,41 @@
 <?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
 <!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
 <!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
-<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.3.xsd">
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[SmiX.MODs Feed News Center]]></title>
 		<description lang="en"><![CDATA[Creates RSS & ATOM feeds input to your board - posts content into forums, shows news as ticking news block ...]]></description>
-		<author-notes lang="en"><![CDATA[This mod is formerly known as lastRSS agregator & lastRSS autoposting bot .MODs. Both were merged, reworked and lastRSS parser class is not used anymore.
-
-This is initial release of this new version.]]></author-notes>
+		<author-notes lang="en"><![CDATA[This mod is formerly known as lastRSS agregator & lastRSS autoposting bot .MODs. Both were merged, reworked and lastRSS parser class is not used anymore.]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[Jiří Šmika]]></realname>
 				<username><![CDATA[Smix]]></username>
 				<homepage><![CDATA[phpBB3.smika.net]]></homepage>
-				<email><![CDATA[phpbb3@smika.net]]></email>
+				<email><![CDATA[dev@smika.net]]></email>
 			</author>
 		</author-group>
-		<mod-version>0.3.5</mod-version>
+		<mod-version>0.4.0</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>300</time>
-			<target-version>3.0.7-PL1</target-version>
+			<target-version>3.0.10</target-version>
 		</installation>
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/adm/style/acp_smixmods_feed_news_center.html" to="adm/style/acp_smixmods_feed_news_center.html"/>
-		</copy>
-		<copy>
-			<file from="root/includes/acp/info/acp_smixmods_feed_news_center.php" to="includes/acp/info/acp_smixmods_feed_news_center.php"/>
-		</copy>
-		<copy>
-			<file from="root/includes/acp/acp_sfnc.php" to="includes/acp/acp_smixmods_feed_news_center.php"/>
-		</copy>
-		<copy>
-			<file from="root/includes/mods/sfnc_feed_parser.class.php" to="includes/mods/sfnc_feed_parser.class.php"/>
-		</copy>
-		<copy>
-			<file from="root/language/en/mods/info_acp_smixmods_feed_news_center.php" to="language/en/mods/info_acp_smixmods_feed_news_center.php"/>
-		</copy>
-		<copy>
-			<file from="root/update_feeds.php" to="update_feeds.php"/>
+			<file from="root/adm/style/acp_sfnc.html" to="adm/style/acp_sfnc.html"/>
+			<file from="root/includes/acp/info/acp_sfnc.php" to="includes/acp/info/acp_sfnc.php"/>
+			<file from="root/includes/acp/acp_sfnc.php" to="includes/acp/acp_sfnc.php"/>
+			<file from="root/includes/mods/sfnc/sfnc.class.php" to="includes/mods/sfnc/sfnc.class.php"/>
+			<file from="root/language/en/mods/info_acp_sfnc.php" to="language/en/mods/info_acp_sfnc.php"/>
 		</copy>
 		<open src="common.php">
 			<edit>
 				<find><![CDATA[// Set PHP error handler to ours
 set_error_handler(defined('PHPBB_MSG_HANDLER') ? PHPBB_MSG_HANDLER : 'msg_handler');]]></find>
-				<action type="before-add"><![CDATA[// SmiX.MODs feed news center [+]
+				<action type="after-add"><![CDATA[// SmiX.MODs feed news center [+]
 include($phpbb_root_path . 'includes/mods/sfnc/sfnc.class.' . $phpEx);
 // SmiX.MODs feed news center [-]]]></action>
 			</edit>
@@ -59,12 +46,11 @@ include($phpbb_root_path . 'includes/mods/sfnc/sfnc.class.' . $phpEx);
 				<find><![CDATA[// Start session management
 $user->session_begin();
 $auth->acl($user->data);
-$user->setup('viewforum');
-]]></find>
+$user->setup('viewforum');]]></find>
 				<action type="after-add"><![CDATA[// SmiX.MODs feed news center [+]
-$smix_feed_parser = new smix_feed_parser();
+$sfnc = new sfnc();
 
-$smix_feed_parser->index_init();
+$sfnc->index_init();
 // SmiX.MODs feed news center [-]]]></action>
 			</edit>
 		</open>
@@ -76,19 +62,7 @@ define('SFNC_FEEDS', $table_prefix . 'smixmods_feed_news_center');
 // SmiX.MODs feed news center [-]]]></action>
 			</edit>
 		</open>
-
-		<open src="language/en/acp/common.php">
-			<edit>
-				<find><![CDATA['LOG_ERROR_EMAIL'		=> 'E-mail error» %s',
-]]></find>
-				<action type="after-add"><![CDATA[// SmiX.MODs feed news center [+]
-'ACP_SMIXMODS_FEED_NEWS_CENTER'	=> 'SmiX.MODs Feed News Center',
-'ACP_SMIXMODS_FEED_NEWS_CENTER_FEEDS'	=> 'Feeds list',
-
-'LOG_ERROR_SMIXMODS_FEED_PARSER_NO_FEED_TYPE'	=>	'Unable to detect feed type for feed "%s"',
-// SmiX.MODs feed news center [-]]]></action>
-			</edit>
-		</open>
+		<php-installer><![CDATA[/contrib/install.php]]></php-installer>
 		<diy-instructions lang="en"><![CDATA[After editing all templates, copy file contrib/install.php to contrib/install.php.
 After running the install.php script you can delete the contrib directory.
     Navigate to:

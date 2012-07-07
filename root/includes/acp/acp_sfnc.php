@@ -113,7 +113,7 @@ class acp_sfnc
 						'CRON_INIT' => $config['sfnc_cron_init'],
 						'CRON_POSTING' => $config['sfnc_cron_posting'],
 						'DOWNLOAD_FUNCTION' => $config['sfnc_download_function'],
-						'SIMPLEXML_AVAILABLE' => (function_exists('simplexml')) ? 1 : 0,
+						'SIMPLEXML_AVAILABLE' => (function_exists('simplexml_load_file')) ? 1 : 0,
 						'CURL_AVAILABLE' => (function_exists('curl_init')) ? 1 : 0,
 						'FOPEN_AVAILABLE' => (function_exists('fopen')) ? 1 : 0,
 					));
