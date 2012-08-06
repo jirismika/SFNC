@@ -53,6 +53,7 @@ class sfnc
 	private $poster_forum_destination_id = 0; // 2;
 	private $poster_topic_destination_id = 0; // 0;
 	private $posting_limit = 3;  // 3;
+	private $debug = false;
 
 	/**
 	 * Caches feed items
@@ -381,7 +382,7 @@ class sfnc
 				if ($this->url)
 				{
 					// TODO add lang entry to error log lang file
-					add_log('critical', 'LOG_ERROR_SFNC_ERROR_URL', $this->url);
+					add_log('critical', 'LOG_ERROR_SFNC_ERROR_URL_NOT_VALID', $this->url);
 				}
 
 				return;

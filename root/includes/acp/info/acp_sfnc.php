@@ -20,7 +20,7 @@ class acp_sfnc_info
 		return array(
 			'filename' => 'sfnc',
 			'title' => 'ACP_SFNC',
-			'version' => '0.3.5',
+			'version' => '0.4.0',
 			'modes' => array(
 				'manage' => array(
 					'title' => 'ACP_SFNC_FEEDS',
@@ -37,12 +37,12 @@ class acp_sfnc_info
 
 	function install()
 	{
-		
+
 	}
 
 	function uninstall()
 	{
-		
+
 	}
 
 }
