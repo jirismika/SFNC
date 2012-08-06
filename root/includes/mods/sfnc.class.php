@@ -53,7 +53,6 @@ class sfnc
 	private $poster_forum_destination_id = 0; // 2;
 	private $poster_topic_destination_id = 0; // 0;
 	private $posting_limit = 3;  // 3;
-	private $debug = false;
 
 	/**
 	 * Caches feed items
