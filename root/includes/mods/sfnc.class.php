@@ -501,10 +501,10 @@ class sfnc
 		global $db;
 
 		$sql = 'UPDATE ' . SFNC_FEEDS . '
-				SET next_update = ' . ( time() + $this->refresh_after ) . '
+				SET next_update = ' . (time() + $this->refresh_after) . '
 				WHERE id = ' . (int) $this->feed_id;
 
-//		$db->sql_query($sql);
+		$db->sql_query($sql);
 	}
 
 	/**
@@ -520,7 +520,7 @@ class sfnc
 				SET last_update = ' . (time() + 5) . '
 				WHERE id = ' . (int) $this->feed_id;
 
-//		$db->sql_query($sql);
+		$db->sql_query($sql);
 	}
 
 	/**
@@ -668,8 +668,7 @@ class sfnc
 			$db->sql_freeresult($result);
 
 			// Do we have a new item to post ?
-			//if (strnatcasecmp($row['topic_title'], $subject))
-			if (true)
+			if (strnatcasecmp($row['topic_title'], $subject))
 			{
 		/*
 				// templates RSS / ATOM has different indexes for messages
