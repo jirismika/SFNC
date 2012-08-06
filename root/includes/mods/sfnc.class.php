@@ -244,6 +244,33 @@ class sfnc
 	}
 
 	/**
+	 * inits parsing based on feed type
+	 */
+	private function parse_data()
+	{
+		if ($this->is_atom() || $this->feed_type == 'atom')
+		{
+			$this->feed_type = 'atom';
+			$this->parse_atom();
+		}
+		elseif ($this->is_rss() || $this->feed_type == 'rss')
+		{
+			$this->feed_type = 'rss';
+			$this->parse_rss();
+		}
+		elseif ($this->is_rdf() || $this->feed_type == 'rdf')
+		{
+			$this->feed_type = 'rdf';
+			$this->parse_rdf();
+		}
+		else
+		{
+			// TODO add lang entry to error log lang file
+			add_log('critical', 'LOG_ERROR_SFNC_NO_FEED_TYPE', $this->name);
+		}
+	}
+
+	/**
 	 * Is downloaded feed in RSS format?
 	 *
 	 * @param xml object $xml
@@ -373,7 +400,7 @@ class sfnc
 	private function populate($id)
 	{
 		// get cached data
-		if ($this->cron_init || ( $this->index_init && ($this->next_update < time() ) ))
+		if ($this->cron_init || ($this->index_init && ($this->next_update < time())))
 		{
 			if (!preg_match('/^(http|https):\/\/([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i', $this->url))
 			{
@@ -393,31 +420,11 @@ class sfnc
 
 			$this->data = $this->get_file($this->url);
 
-			// switch parsing by data type
 			if ($this->data)
 			{
-				if ($this->is_atom() || $this->feed_type == 'atom')
-				{
-					$this->feed_type = 'atom';
-					$this->parse_atom();
-				}
-				elseif ($this->is_rss() || $this->feed_type == 'rss')
-				{
-					$this->feed_type = 'rss';
-					$this->parse_rss();
-				}
-				elseif ($this->is_rdf() || $this->feed_type == 'rdf')
-				{
-					$this->feed_type = 'rdf';
-					$this->parse_rdf();
-				}
-				else
-				{
-					// TODO add lang entry to error log lang file
-					add_log('critical', 'LOG_ERROR_SFNC_NO_FEED_TYPE', $this->name);
-				}
+				$this->parse_data();
 
-				// if download was successful
+				// if download and parsing was successful, we have everything
 				if (!empty($this->items))
 				{
 					$this->cache_store_feed();
@@ -621,6 +628,12 @@ class sfnc
 		// require necessary functions for posting
 		require_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 
+		if (!$this->poster_id)
+		{
+			add_log('critical', 'LOG_ERROR_SFNC_ERROR_NO_POSTER_ID', $this->feed_id);
+			return;
+		}
+
 		// prepare user data for posting bot
 		$user_backup = $user;
 		$auth_backup = $auth;
@@ -670,14 +683,7 @@ class sfnc
 			// Do we have a new item to post ?
 			if (strnatcasecmp($row['topic_title'], $subject))
 			{
-		/*
-				// templates RSS / ATOM has different indexes for messages
-				$temp = ( ($this->feed_type == 'rss') || ($this->feed_type == 'rdf') ) ? 'description' : 'content';
-				$message = $this->feed_name . "\n\n" . $this->items[$i][$temp];
-		 */
-				// TODO templates
-				// $this->template $this->templating() // [$temp]
-				$message = $this->apply_template($this->items[$i]); //$this->feed_name . "\n\n" . $this->items[$i][$temp];
+				$message = $this->apply_template($this->items[$i]);
 
 				// post time - not used in version > 0.3.2 (caused bugs with post sorting in topic and quoting)
 				$post_time = 0;
@@ -755,7 +761,7 @@ class sfnc
 			$j++;
 		}
 
-		// TODO rebuild/sync forums latest topics and post counts
+		// TODO rebuild/sync forums latest topics and post counts, known bug
 		// redirect to index
 		if (!$this->cron_init)
 		{
@@ -1000,8 +1006,6 @@ class sfnc
 
 		// make returning array
 		$ticker_data = array();
-		$type = 'display';
-		$template = 'template_for_'.$type.'ing';
 
 		// basic info
 		$ticker_data['id'] = $this->feed_id;
