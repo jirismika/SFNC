@@ -139,7 +139,7 @@ class sfnc
 		if (!$content)
 		{
 			// TODO add lang entry to error log lang file
-			add_log('critical', 'LOG_ERROR_SFNC_ERROR_URL', $this->url);
+			add_log('critical', 'LOG_ERROR_SFNC_ERROR_NO_CONTENT', $this->url);
 		}
 
 		return $content;
