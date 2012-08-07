@@ -920,7 +920,7 @@ class sfnc
 
 		if (!$message)
 		{
-			// TODO return "default" template or default error message???
+			add_log('critical', 'LOG_ERROR_SFNC_MISSING_TEMPLATE', $this->name, $text, $type);
 			return '';
 		}
 
