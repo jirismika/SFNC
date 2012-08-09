@@ -43,8 +43,8 @@ class sfnc
 	private $index_posting = true; // init on index.php
 	// some informations
 	private $channel_info = array();
-	private $available_feed_atributes = array();
-	private $available_item_atributes = array();
+	private $available_feed_attributes = array();
+	private $available_item_attributes = array();
 	// templates
 	private $template_for_posting = '';
 	private $template_for_displaying = '';
@@ -87,13 +87,13 @@ class sfnc
 	 *
 	 * @param string $index
 	 */
-	private function check_feed_atributes($index)
+	private function check_feed_attributes($index)
 	{
-		$available_attributes = ($this->available_feed_atributes) ? array_flip($this->available_feed_atributes) : array();
+		$available_attributes = ($this->available_feed_attributes) ? array_flip($this->available_feed_attributes) : array();
 
 		if (!isset($available_attributes[$index]))
 		{
-			$this->available_feed_atributes[] = $index;
+			$this->available_feed_attributes[] = $index;
 		}
 	}
 
@@ -102,13 +102,13 @@ class sfnc
 	 *
 	 * @param string $index
 	 */
-	private function check_item_atributes($index)
+	private function check_item_attributes($index)
 	{
-		$available_attributes = ($this->available_item_atributes) ? array_flip($this->available_item_atributes) : array();
+		$available_attributes = ($this->available_item_attributes) ? array_flip($this->available_item_attributes) : array();
 
 		if (!isset($available_attributes[$index]))
 		{
-			$this->available_item_atributes[] = $index;
+			$this->available_item_attributes[] = $index;
 		}
 	}
 
@@ -291,7 +291,7 @@ class sfnc
 		{
 			foreach ($v as $attribute => $attribute_value)
 			{
-				$this->check_feed_atributes($attribute);
+				$this->check_feed_attributes($attribute);
 			}
 		}
 
@@ -302,7 +302,7 @@ class sfnc
 			foreach ($item as $k => $v)
 			{
 				$this->items[$i][utf8_recode($k, $this->encoding)] = (string) utf8_recode($v, $this->encoding);
-				$this->check_item_atributes($k);
+				$this->check_item_attributes($k);
 			}
 			$i++;
 		}
@@ -329,7 +329,7 @@ class sfnc
 		{
 			foreach ($v as $at => $av)
 			{
-				$this->check_feed_atributes($at);
+				$this->check_feed_attributes($at);
 			}
 		}
 
@@ -340,7 +340,7 @@ class sfnc
 			foreach ($item as $k => $v)
 			{
 				$this->items[$i][utf8_recode($k, $this->encoding)] = (string) utf8_recode($v, $this->encoding);
-				$this->check_item_atributes($k);
+				$this->check_item_attributes($k);
 			}
 			$i++;
 		}
@@ -370,7 +370,7 @@ class sfnc
 		{
 			if ($ak != 'entry')
 			{
-				$this->check_feed_atributes($ak);
+				$this->check_feed_attributes($ak);
 			}
 		}
 
@@ -385,7 +385,7 @@ class sfnc
 				foreach ($details as $k => $v)
 				{
 					$this->items[$i][utf8_recode($k, $this->encoding)] = (string) utf8_recode($v, $this->encoding);
-					$this->check_item_atributes($k);
+					$this->check_item_attributes($k);
 				}
 				$i++;
 			}
@@ -484,8 +484,8 @@ class sfnc
 
 		// some informations
 		$this->channel_info = array();
-		$this->available_feed_atributes = array();
-		$this->available_item_atributes = array();
+		$this->available_feed_attributes = array();
+		$this->available_item_attributes = array();
 
 		// templates
 		$this->template_for_posting = '';
@@ -531,7 +531,7 @@ class sfnc
 	}
 
 	/**
-	 * Saves feed_type, encoding and available parsed atributes
+	 * Saves feed_type, encoding and available parsed attributes
 	 *
 	 * @global db $db
 	 */
@@ -542,8 +542,8 @@ class sfnc
 		$sql = 'UPDATE ' . SFNC_FEEDS . '
 				SET feed_type = "' . strtolower($this->feed_type) . '",
 					encoding = "' . strtolower($this->encoding) . '",
-					available_feed_atributes = "' . implode(',', $this->available_feed_atributes) . '",
-					available_item_atributes = "' . implode(',', $this->available_item_atributes) . '"
+					available_feed_attributes = "' . implode(',', $this->available_feed_attributes) . '",
+					available_item_attributes = "' . implode(',', $this->available_item_attributes) . '"
 				WHERE id = ' . (int) $this->feed_id;
 
 		$db->sql_query($sql);
@@ -569,7 +569,7 @@ class sfnc
 					next_update, last_update, refresh_after,
 					template_for_displaying, template_for_posting,
 					poster_id, poster_forum_destination_id, poster_topic_destination_id, posting_limit,
-					available_feed_atributes, available_item_atributes,
+					available_feed_attributes, available_item_attributes,
 					enabled_posting, enabled_displaying
 				FROM ' . SFNC_FEEDS . '
 				WHERE id = ' . $this->feed_id;
@@ -592,13 +592,13 @@ class sfnc
 			}
 
 			// split values from db ...
-			if (!is_array($this->available_feed_atributes))
+			if (!is_array($this->available_feed_attributes))
 			{
-				$this->available_feed_atributes = explode(',', $this->available_feed_atributes);
+				$this->available_feed_attributes = explode(',', $this->available_feed_attributes);
 			}
-			if (!is_array($this->available_item_atributes))
+			if (!is_array($this->available_item_attributes))
 			{
-				$this->available_item_atributes = explode(',', $this->available_item_atributes);
+				$this->available_item_attributes = explode(',', $this->available_item_attributes);
 			}
 
 			// get data from the feed and prepare it for later use if wanted
@@ -883,7 +883,7 @@ class sfnc
 	{
 		$bb = array();
 
-		foreach ($this->available_feed_atributes as $a)
+		foreach ($this->available_feed_attributes as $a)
 		{
 			// don´t show item as available for templates
 			if ($a != 'item' && $a != 'items')
@@ -896,7 +896,7 @@ class sfnc
 			$bb['feed_name'] = "[sfnc_feed_name]";
 		}
 
-		foreach ($this->available_item_atributes as $a)
+		foreach ($this->available_item_attributes as $a)
 		{
 			// sfnc_ helps to find the tag
 			$bb[$a] = "[sfnc_item_".$a."]";

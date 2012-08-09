@@ -58,7 +58,7 @@ $sfnc->index_init();
 			<edit>
 				<find><![CDATA[// Additional tables]]></find>
 				<action type="after-add"><![CDATA[// SmiX.MODs feed news center [+]
-define('SFNC_FEEDS', $table_prefix . 'smixmods_feed_news_center');
+define('SFNC_FEEDS', $table_prefix . 'sfnc_feeds');
 // SmiX.MODs feed news center [-]]]></action>
 			</edit>
 		</open>

@@ -36,7 +36,7 @@ class acp_sfnc
 		$list = array();
 		$sql = 'SELECT id, feed_name, url, feed_type,
 					next_update, last_update, refresh_after,
-					available_feed_atributes, available_item_atributes,
+					available_feed_attributes, available_item_attributes,
 					encoding, enabled_posting, enabled_displaying,
 					template_for_displaying, template_for_posting,
 					poster_id, poster_forum_destination_id, poster_topic_destination_id, posting_limit
@@ -216,13 +216,13 @@ class acp_sfnc
 					}
 					else
 					{
-						$available_atributes = array();
+						$available_attributes = array();
 
 						$sfnc = new sfnc();
 
 						$sfnc->acp_init($id);
 
-						$available_atributes = $sfnc->get_available_bb();
+						$available_attributes = $sfnc->get_available_bb();
 
 						// make_forum_select($select_id, $ignore_id, $ignore_acl, $ignore_nonpost, $ignore_emptycat, $only_acl_post, $return_array)
 						$forum_list = make_forum_select(false, false, true, true, true, false, true);
@@ -254,10 +254,10 @@ class acp_sfnc
 							// recount back refresh_after to hours & minutes
 							'REFRESH_AFTER_HOURS' => (isset($list[$id]['refresh_after'])) ? ($list[$id]['refresh_after'] < 3600) ? 0 : floor($list[$id]['refresh_after'] / 3600)  : '',
 							'REFRESH_AFTER_MINUTES' => (isset($list[$id]['refresh_after'])) ? ($list[$id]['refresh_after'] < 3600) ? 0 : ceil($list[$id]['refresh_after'] % 3600 / 60)  : '',
-							// atributes
-							'AVAILABLE_ATRIBUTES' => implode(', ', $available_atributes),
-//							'AVAILABLE_FEED_ATRIBUTES' => isset($list[$id]['available_feed_atributes']) ? $list[$id]['available_feed_atributes'] : '',
-//							'AVAILABLE_ITEM_ATRIBUTES' => isset($list[$id]['available_item_atributes']) ? $list[$id]['available_item_atributes'] : '',
+							// attributes
+							'AVAILABLE_ATTRIBUTES' => implode(', ', $available_attributes),
+//							'AVAILABLE_FEED_ATTRIBUTES' => isset($list[$id]['available_feed_attributes']) ? $list[$id]['available_feed_attributes'] : '',
+//							'AVAILABLE_ITEM_ATTRIBUTES' => isset($list[$id]['available_item_attributes']) ? $list[$id]['available_item_attributes'] : '',
 							// templates
 							'TEMPLATE_FOR_POSTING' => isset($list[$id]['template_for_posting']) ? $list[$id]['template_for_posting'] : '',
 							'TEMPLATE_FOR_DISPLAYING' => isset($list[$id]['template_for_displaying']) ? $list[$id]['template_for_displaying'] : '',
