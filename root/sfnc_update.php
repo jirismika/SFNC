@@ -19,7 +19,7 @@ $auth->acl($user->data);
 
 $sfnc = new sfnc();
 
-$sfnc->init_on_cron();
+$sfnc->cron_init();
 
 // TODO lang file ? simple die ? trigger_error ? ...
 trigger_error("Page loaded completely.<br>Note : This message doesn't mean, that there wasn't some problems during the run.", E_USER_WARNING);
