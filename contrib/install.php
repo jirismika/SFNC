@@ -3,7 +3,7 @@
 *
 * @package contrib
 * @version $Id:
-* @copyright (c) 2007 Jiri Smika (Smix) http://phpbb3.smika.net
+* @copyright (c) 2009-2011 Jiri Smika (Smix) http://phpbb3.smika.net
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -21,7 +21,7 @@ $user->setup();
 
 $sql_array = array();
 // this release version info
-$version = '0.3.4';
+$version = '0.3.5';
 
 // only admin can install/update this mod - nobody else can run this script
 if(!($user->data['user_type']) == USER_FOUNDER)
@@ -54,9 +54,9 @@ if (isset($config['sfnc_version']))
 		
 		$sql_array[] = 'UPDATE ' . CONFIG_TABLE . ' SET config_value = "'.$version.'" WHERE config_name = "sfnc_version"';
 	}
-	// weird ? :-D ... do nothing
 	elseif ($version < $config['sfnc_version'])
 	{
+		// weird ? :-D ... do nothing
 	}
 }
 else
@@ -103,13 +103,14 @@ if ($sql_array)
 {
 	foreach ($sql_array as $sql)
 	{
-		if(!$db->sql_query($sql))
+		if (!$db->sql_query($sql))
 		{
 			trigger_error('ERROR during SQL query : ' . $sql, E_USER_ERROR);
 		}
 		// refresh cache
 		$cache->destroy('config');
 	}
+
 	trigger_error('<span style="color:green; font-weight:bold;">Installation of version '.$version.' was successfull</span>');
 }
 else

@@ -3,7 +3,7 @@
  *
  * @package smixmods_feed_news_center
  * @version $Id: $
- * @copyright (c) 2009-2010 Jiri Smika (Smix) http://phpbb3.smika.net
+ * @copyright (c) 2009-2011 Jiri Smika (Smix) http://phpbb3.smika.net
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
@@ -121,9 +121,34 @@ class acp_smixmods_feed_news_center
 
 			break;
 
-			case 'manage' :
-				// manage existing feeds in $list
+			// try to download the feed and make setup the feed better
+			case 'download' :
 				
+				if (!$id)
+				{
+					trigger_error('No feed selected! ' . adm_back_link($this->u_action), E_USER_NOTICE);
+				}
+				
+				var_dump($list);
+				
+				if (isset($list[$id]))
+				{
+					var_dump($list[$id]);
+				}
+				
+				$sfnc = new smix_feed_parser();
+				
+				// TODO we'll need a new public function - dev_download();
+				$sfnc->cron_init();
+				
+				die();
+				
+				
+			break;
+			
+			// manage existing feeds in $list
+			case 'manage' :
+
 				if (!$id)
 				{
 					// feed is not chosen - show list

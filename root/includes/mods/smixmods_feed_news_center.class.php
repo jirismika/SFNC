@@ -128,7 +128,7 @@ class smix_feed_parser
 		{
 			return simplexml_load_file($this->url, 'SimpleXMLElement', LIBXML_NOCDATA); //
 		}
-		// note - this is probably not longer required ...
+		// NOTE this probably isnot any longer required ...
 		elseif ($this->download_function == 'curl')
 		{
 			$content = $this->get_file_curl($this->url);
@@ -158,9 +158,9 @@ class smix_feed_parser
 		@curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1);
 
 		//@curl_setopt( $ch, CURLOPT_ENCODING, '');
-		@curl_setopt( $ch, CURLOPT_USERAGENT, 'SmiX.MODs_feed_center');
+		@curl_setopt( $ch, CURLOPT_USERAGENT, 'SmiX.MODs_feed_center'); // TOTHINK changeable via ACP?
+		
 		// initial connection timeout
-
 		@curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 5);
 		// setting this to higher means longer time for loading the page for user!
 		@curl_setopt( $ch, CURLOPT_TIMEOUT, 60);
@@ -534,6 +534,7 @@ class smix_feed_parser
 
 	/**
 	 * Sets settings for selected feed
+	 * 
 	 * @global global $db
 	 * @param integer $feed_id
 	 */
@@ -573,7 +574,7 @@ class smix_feed_parser
 				}
 			}
 
-			// split values are from db ...
+			// split values from db ...
 			if (!is_array($this->available_feed_atributes))
 			{
 				$this->available_feed_atributes = split(',', $this->available_feed_atributes);
@@ -637,11 +638,15 @@ class smix_feed_parser
 
 			// prepare data for posting
 
-			// TODO templates
 			$subject = truncate_string($this->items[$i]['title']);
 			generate_text_for_storage($subject, $uid, $bitfield, $options, false, false, false);
 
-			// TODO remake this ... check if this post/topic is in db ... post if not
+			// TODO remake the check, if this post/topic is in db ... post if not
+			// NOTE some news has a same repetitive name/title, with actual simple check for topic_title/subject => they'll never be posted :-/
+			// NOTE ... not all feeds has a pubDate or similar time announcing tag :-/
+			// IDEA MANUAL POSTING 
+			//		What about downloading "all" messages and privileged user check the checkbox for messages to post ?
+			//      After automatic check if the feed has a new messages, and it has a new messages, send PM to privileged user(s)
 
 			// check if this topic is not already posted
 			$sql = 'SELECT topic_title
@@ -658,6 +663,9 @@ class smix_feed_parser
 			{
 				// templates RSS / ATOM has different indexes for messages
 				$temp = ( ($this->feed_type == 'rss') || ($this->feed_type == 'rdf') )? 'description' : 'content';
+				
+				// TODO templates
+				// $this->template $this->templating()
 				$message = $this->feed_name."\n\n".$this->items[$i][$temp];
 
 				// post time - not used in version > 0.3.2 (caused bugs with post sorting in topic and quoting)
@@ -823,6 +831,7 @@ class smix_feed_parser
 				else
 				{
 					$this->setup_feed($id);
+					// IDEA if we'll find a message which hasn't been posted, we can send a PM to privileged user to manually post the messages
 				}
 			}
 		}
