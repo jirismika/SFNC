@@ -4,7 +4,7 @@
  *
  * @package contrib
  * @version $Id:
- * @copyright (c) 2009-2011 Jiri Smika (Smix) http://phpbb3.smika.net
+ * @copyright (c) 2009-2013 Jiri Smika (Smix) http://phpbb3.smika.net
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
@@ -22,7 +22,7 @@ $user->setup();
 $sql_array = array();
 
 // this release version info
-$version = '0.4.0a';
+$version = '0.4.0b';
 
 // determine the best possible function
 if (function_exists('simplexml_load_file'))
