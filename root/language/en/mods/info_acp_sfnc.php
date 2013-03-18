@@ -72,6 +72,7 @@ $lang = array_merge($lang, array(
 	'ACP_SFNC_REFRESH_AFTER_HOURS' => 'hours',
 	'ACP_SFNC_REFRESH_AFTER_MINUTES' => 'minutes',
 	// templates
+	'ACP_SFNC_AVAILABLE_ATTRIBUTES' => 'Available attributes',
 	'ACP_SFNC_TEMPLATES' => 'Templates',
 	'ACP_SFNC_TEMPLATES_DESCRIPTION' => 'There you can edit templates used for posting or displaying on your board',
 	'ACP_SFNC_TEMPLATE_FOR_POSTING' => 'Post template',
