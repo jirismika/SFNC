@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- MODX by the phpBB MOD Team XSL file v1.2.3 copyright 2005-2009 the phpBB MOD Team.
+<!-- MODX by the phpBB MOD Team XSL file v1.2.4 copyright 2005-2010 the phpBB MOD Team.
 	This file is released under the GNU GPL version 2.  See license.txt.
-	$Id: modx.prosilver.en.xsl 3407 2009-10-26 01:49:01Z Raimon $ -->
+	$Id: modx.prosilver.en.xsl 211 2010-02-27 20:05:11Z tumba25 $ -->
 <!DOCTYPE xsl:stylesheet[
 	<!ENTITY nbsp "&#160;">
 ]>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:mod="http://www.phpbb.com/mods/xml/modx-1.2.3.xsd">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:mod="https://www.phpbb.com/mods/xml/modx-1.2.6.xsd">
 	<xsl:output method="html" omit-xml-declaration="no" indent="yes" />
 	<xsl:variable name="title" select="mod:mod/mod:header/mod:title" />
 	<xsl:variable name="version">
@@ -23,7 +23,7 @@
 /*  phpBB 3.0 Admin Style Sheet
 	–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 	Original author:	subBlue ( http://www.subblue.com/ )
-	Copyright 2007 phpBB Group ( http://www.phpbb.com/ )
+	Copyright 2007 phpBB Group ( https://www.phpbb.com/ )
 	–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 */
 
@@ -410,12 +410,12 @@ span.key { font-size:12px; line-height:14px; padding-bottom:2px; width:20px; bor
 
 dl.author-info dd { margin-left:112px; margin-bottom:8px; }
 .rtl dl.author-info dd { margin-left:112px; margin-bottom:8px; }
-ol#file-copy { padding:5px; margin-left:20px; margin-right:20px; margin-bottom:10px; }
-ol#file-copy li { margin-left:30px; margin-right:30px; vertical-align:top;}
-ol#file-copy span { font-weight:bold; }
-ol#file-copy dt {margin-right:5px; float:none !important }
-ol#file-copy dl {width:100%}
-h2#lang-fca, h2#lang-edts, h2#lang-diy, h2#lang-sql { margin-left:5px; }
+ol#file-copy, ol#file-delete { padding:5px; margin-left:20px; margin-right:20px; margin-bottom:10px; }
+ol#file-copy li, ol#file-delete li { margin-left:30px; margin-right:30px; vertical-align:top;}
+ol#file-copy span, ol#file-delete span { font-weight:bold; }
+ol#file-copy dt, ol#file-delete dt {margin-right:5px; float:none !important }
+ol#file-copy dl, ol#file-delete dl {width:100%}
+h2#lang-fca, h2#lang-edts, h2#lang-diy, h2#lang-sql, h2#lang-installer-h2, h2#lang-del-head { margin-left:5px; }
 
 /* Code block */
 div.codebox {
@@ -511,6 +511,11 @@ div.endMOD { padding:0 5px; }
 						mhcls_ll.push('<xsl:value-of select="generate-id()"/>');
 					</xsl:if>
 				</xsl:for-each>
+
+				var link_ll = [];
+				<xsl:for-each select="mod:link-group/mod:link">
+					link_ll.push('<xsl:value-of select="generate-id()"/>');
+				</xsl:for-each>
 			</xsl:for-each>
 
 			var opens_ll = [];
@@ -529,8 +534,10 @@ div.endMOD { padding:0 5px; }
 			</xsl:for-each>
 
 			var finds_ll = [];
+			var removes_ll = [];
 			var regex_ll = [];
 			var ifinds_ll = [];
+			var iremoves_ll = [];
 			var iregex_ll = [];
 			var addafters_ll = [];
 			var iaddafters_ll = [];
@@ -544,6 +551,9 @@ div.endMOD { padding:0 5px; }
 			<xsl:for-each select="mod:action-group/mod:open/mod:edit">
 				<xsl:for-each select="mod:find">
 					finds_ll.push('<xsl:value-of select="generate-id()"/>');
+				</xsl:for-each>
+				<xsl:for-each select="mod:remove">
+					removes_ll.push('<xsl:value-of select="generate-id()"/>');
 				</xsl:for-each>
 				<xsl:if test="count(mod:comment) > 0">
 					comments_ll.push('<xsl:value-of select="generate-id()"/>');
@@ -571,6 +581,9 @@ div.endMOD { padding:0 5px; }
 						<xsl:if test="@type = 'regex'">
 							iregex_ll.push('<xsl:value-of select="generate-id()"/>');
 						</xsl:if>
+					</xsl:for-each>
+					<xsl:for-each select="mod:inline-remove">
+						iremoves_ll.push('<xsl:value-of select="generate-id()"/>');
 					</xsl:for-each>
 					<xsl:for-each select="mod:inline-find|mod:inline-action">
 						codes_ll.push('<xsl:value-of select="generate-id()"/>');
@@ -601,12 +614,17 @@ div.endMOD { padding:0 5px; }
 				copies_ll.push('<xsl:value-of select="generate-id()"/>');
 			</xsl:for-each>
 
+			var delete_ll = [];
+			<xsl:for-each select="mod:action-group/mod:delete/mod:file">
+				delete_ll.push('<xsl:value-of select="generate-id()"/>');
+			</xsl:for-each>
+
 			<xsl:text disable-output-escaping="yes">
 <![CDATA[
 // The following line from http://www.ryancooper.com/resources/keycode.asp
 document.onkeydown = mod_do_keypress;
 
-var host = "http://www.phpbb.com/mods/modx/i18n/";
+var host = "https://www.phpbb.com/mods/modx/i18n/";
 
 var enStrings = "dir=ltr\n" +
 "h1=Installation instructions for\n" +
@@ -628,6 +646,7 @@ var enStrings = "dir=ltr\n" +
 "a-e=Email:\n" +
 "a-n=Name:\n" +
 "a-h=WWW:\n" +
+"a-git=Github:\n" +
 "a-c=Contributions:\n" +
 "a-c-f=From\n" +
 "a-c-t=to\n" +
@@ -636,14 +655,14 @@ var enStrings = "dir=ltr\n" +
 "icf=Included files\n" +
 "icfn=No files have been included with this MOD.\n" +
 "dcl=Disclaimer\n" +
-"dclt=For security purposes, please check: <a href=\"http://www.phpbb.com/mods/\">http://www.phpbb.com/mods/</a> for the latest version of this MOD. Downloading this MOD from other sites could cause malicious code to enter into your phpBB Forum. As such, phpBB will not offer support for MODs not offered in our MODs database, located at: <a href=\"http://www.phpbb.com/mods/\">http://www.phpbb.com/mods/</a>\n" +
+"dclt=For security purposes, please check: <a href=\"https://www.phpbb.com/mods/\">https://www.phpbb.com/mods/</a> for the latest version of this MOD. Downloading this MOD from other sites could cause malicious code to enter into your phpBB Forum. As such, phpBB will not offer support for MODs not offered in our MODs database, located at: <a href=\"https://www.phpbb.com/mods/\">https://www.phpbb.com/mods/</a>\n" +
 "isp=and English support\n" +
-"ispt=English support can be obtained at <a href=\"http://www.phpbb.com/mods/\">http://www.phpbb.com/mods/</a> for released MODs.\n" +
+"ispt=English support can be obtained at <a href=\"https://www.phpbb.com/mods/\">https://www.phpbb.com/mods/</a> for released MODs.\n" +
 "ant=Author notes:\n" +
 "lic=License\n" +
 "lict=This MOD has been licensed under the following license:\n" +
 "ont=and other notes\n" +
-"ontt1=Before adding this MOD to your forum, you should back up all files related to this MOD.\n" +
+"ontt1=Before adding this MOD to your forum, you should back up all files and databases related to this MOD.\n" +
 "ontt2=This MOD was designed for phpBB\n" +
 "ontt3=and may not function as stated on other phpBB versions. MODs for phpBB 3.0 will <strong>not</strong> work on phpBB 2.0 and vice versa.\n" +
 "onttq=This MOD is development quality. It is not recommended that you install it on a live forum.\n" +
@@ -659,24 +678,28 @@ var enStrings = "dir=ltr\n" +
 "cm-cmt=Comments\n" +
 "fnd=Find\n" +
 "fndt=<strong>Tip:</strong> This may be a partial find and not the whole line.\n" +
+"remove=Find and Delete\n" +
+"removet=<strong>Tip:</strong> Find and delete this code.\n" +
 "rplw=Replace with\n" +
 "rplwt=<strong>Tip:</strong> Replace the preceding line(s) to find with the following lines.\n" +
 "aft=Add after\n" +
 "aftt=<strong>Tip:</strong> Add these lines on a new blank line after the preceding line(s) to find.\n" +
 "bef=Add before\n" +
 "beft=<strong>Tip:</strong> Add these lines on a new blank line before the preceding line(s) to find.\n" +
-"inc=Increment\n" +
-"inct=<strong>Tip:</strong> This allows you to alter integers. For help on what each operator means, click here.\n" +
+"inc=Operation\n" +
+"inct=<strong>Tip:</strong> This allows you to alter integers.\n" +
 "ifnd=In-line Find\n" +
 "ifndt=<strong>Tip:</strong> This is a partial match of a line for in-line operations.\n" +
+"iremove=In-line Find and Delete\n" +
+"iremovet=<strong>Tip:</strong> Find this code in the line and delete it.\n" +
 "irplw=In-line Replace with\n" +
 "irplwt=\n" +
 "iaft=In-line Add after\n" +
 "iaftt=\n" +
 "ibef=In-line Add before\n" +
 "ibeft=\n" +
-"iinc=In-line Increment\n" +
-"iinct=<strong>Tip:</strong> This allows you to alter integers. For help on what each operator means, click here.\n" +
+"iinc=In-line Operation\n" +
+"iinct=<strong>Tip:</strong> This allows you to alter integers.\n" +
 "diy=DIY instructions\n" +
 "diyt=These are manual instructions that cannot be performed automatically. You should follow these instructions carefully.\n" +
 "eom=Save all files. End of MOD.\n" +
@@ -684,17 +707,26 @@ var enStrings = "dir=ltr\n" +
 "slg=Select language:\n" +
 "dbms=Select Database Type:\n" +
 "foot=MOD UA XSLT File Copyright &#169; 2007 The phpBB Group, this MOD is copyright to the authors listed above.\n" +
-"regex=This find contains an advanced feature known as regular expressions, click here to learn more.\n" +
+"regex=This find contains an advanced feature known as regular expressions.\n" +
 "mhe-v=- Version\n" +
 "mh=MOD history\n" +
-"addtl-modx=Additional MODX files\n" +
-"imn=This MOD has no additional MODX files.\n" +
+"addtl-modx=Additional file(s)\n" +
+"imn=This MOD has no additional file(s).\n" +
 "link-c=Contrib\n" +
 "link-d=Dependency\n" +
 "link-l=Language\n" +
 "link-p=Parent\n" +
 "link-te=Template\n" +
+"link-txt=Text file\n" +
 "link-tl=Template lang\n" +
+"link-un=Uninstall instructions\n" +
+"installer-h2=PHP install file\n" +
+"installer-exp1=There is a PHP install file that needs to be run in order to complete the installation.\n" +
+"installer-exp2=To run it point your browser to, for example,\n" +
+"ispt-int=Support in your language <strong>might</strong> be available at a <a href=\"https://www.phpbb.com/support/intl/\">international support site</a>.\n" +
+"del-heads=Delete files\n" +
+"del-head=Delete file\n" +
+"del-file=Delete\n" +
 "atm=About this MOD";
 
 var box = codes_ll;
@@ -704,23 +736,27 @@ var languages = ['en'];
 var arrClasCnt = [
 	['a-'	, authors_ll		],
 	['c-'	, copies_ll			],
+	['del-'	, delete_ll			],
 	['cm-'	, comments_ll		],
 	['opn'	, opens_ll			],
 	['cde-'	, codes_ll			],
 	['edt-'	, edits_ll			],
 	['fnd'	, finds_ll			],
+	['rem'	, removes_ll			],
 	['regex', regex_ll			],
 	['rplw'	, replacewiths_ll	],
 	['aft'	, addafters_ll		],
 	['bef'	, addbefores_ll		],
 	['inc'	, increments_ll		],
 	['ifnd'	, ifinds_ll			],
+	['irem'	, iremoves_ll			],
 	['regex', iregex_ll			],
 	['irplw', ireplacewiths_ll	],
 	['iaft'	, iaddafters_ll		],
 	['ibef'	, iaddbefores_ll	],
 	['iinc'	, iincrements_ll	],
-	['mhe'	, mhes_ll			]
+	['mhe'	, mhes_ll			],
+	['link', link_ll]
 ];
 
 function startup()
@@ -745,6 +781,8 @@ function changeLanguage(langCode)
 		applyLanguage(enStrings.split("\n"));
 	}
 	xslLanguage(langCode);
+
+	show_title(langCode);
 }
 
 function load_languages()
@@ -771,6 +809,71 @@ function load_language()
 	$output = 'load_language';
 	cachernd = parseInt(Math.random() * 99999999); // cache
 	send('', host + currentLanguage + '.txt?rnd=' + cachernd);
+}
+
+/**
+* From http://stackoverflow.com/questions/1280903/javascript-ie-and-getelementsbyclassname-problems/8472488#8472488
+*/
+if (typeof document.getElementsByClassName != 'function')
+{
+	document.getElementsByClassName = function()
+	{
+		var elms = document.getElementsByTagName('*');
+		var ei = new Array();
+		for (i = 0; i < elms.length; i++)
+		{
+			if (elms[i].getAttribute('class'))
+			{
+				ecl = elms[i].getAttribute('class').split(' ');
+				for (j = 0; j < ecl.length; j++)
+				{
+					if (ecl[j].toLowerCase() == arguments[0].toLowerCase())
+					{
+						ei.push(elms[i]);
+					}
+				}
+			}
+			else if (elms[i].className)
+			{
+				ecl = elms[i].className.split(' ');
+				for (j = 0; j < ecl.length; j++)
+				{
+					if (ecl[j].toLowerCase() == arguments[0].toLowerCase())
+					{
+						ei.push(elms[i]);
+					}
+				}
+			}
+		}
+		return ei;
+	}
+}
+
+function show_title(langCode)
+{
+	var sel_title = document.getElementById('title-' + langCode);
+
+	if (sel_title == null)
+	{
+		// A title in English is required.
+		sel_title = document.getElementById('title-en')
+
+		if (sel_title == null)
+		{
+			// No title in English or the selected language.
+			return;
+		}
+	}
+
+	var hide_title = document.getElementsByClassName('hide-title');
+
+	for (var i = 0; i < hide_title.length; i++)
+	{
+		hide_title[i].style.display='none';
+	}
+
+	sel_title.style.display='inline';
+	document.title = "phpBB MOD » " + sel_title.innerHTML;
 }
 
 /*****************
@@ -1118,8 +1221,6 @@ function set_dir(direction)
 
 	var rtl_float = (ie) ? 'styleFloat' : 'cssFloat';
 
-//alert(rtl_spec.length);
-
 	if(direction == 'rtl')
 	{
 		for(j = 0; j < dts.length; j++)
@@ -1392,7 +1493,7 @@ function change_dbms($form)
 		'mssql',
 		'oracle',
 		'postgres',
-		'sqllite'
+		'sqlite'
 	];
 	$exists = 0;
 	$tags = document.getElementsByTagName('dbms');
@@ -1407,7 +1508,7 @@ function change_dbms($form)
 	{
 		for ($i = 0; $i < $tags.length; $i++)
 		{
-			if (!($dbms = $tags[$i].attributes['type'].nodeValue))
+			if (!($dbms = $tags[$i].attributes['type'].value))
 			{
 				continue;
 			}
@@ -1439,7 +1540,7 @@ function sql_display($value)
 	// show the dbms of type we have selected, hide all others except for non dbms specific
 	for ($i = 0; $i < $tags.length; $i++)
 	{
-		if (!($dbms = $tags[$i].attributes['type'].nodeValue))
+		if (!($dbms = $tags[$i].attributes['type'].value))
 		{
 			continue;
 		}
@@ -1487,7 +1588,7 @@ function sql_dropdown()
 		'mssql',
 		'oracle',
 		'postgres',
-		'sqllite'
+		'sqlite'
 	];
 	$options = [];
 	$ie_options = [];
@@ -1497,7 +1598,7 @@ function sql_dropdown()
 	// Show the dbms of type we have selected, hide all others except for non dbms specific
 	for ($i = 0; $i < $tags.length; $i++)
 	{
-		if (!($dbms = $tags[$i].attributes['type'].nodeValue))
+		if (!($dbms = $tags[$i].attributes['type'].value))
 		{
 			continue;
 		}
@@ -1595,7 +1696,14 @@ function toggle_edit(o)
 		<div id="debug"></div>
 		<div id="wrap">
 			<div id="page-header">
-				<h1><span id="lang-h1">Installation instructions for</span> '<xsl:value-of select="$title" />' <span id="lang-V">version</span>&nbsp;<xsl:value-of select="$version" /></h1>
+				<h1>
+					<span id="lang-h1">Installation instructions for</span>
+					<span class="hide-title" lang="{@lang}"> '<xsl:value-of select="$title" />' </span>
+					<xsl:for-each select="mod:header/mod:title">
+						<span class="hide-title" lang="{@lang}" id="title-{@lang}" style="display: none;"> '<xsl:value-of select="current()" />' </span>
+					</xsl:for-each>
+					<span id="lang-V">version</span>&nbsp;<xsl:value-of select="$version" />
+				</h1>
 				<form method="post" action="" id="lang-selector" style="display: none;">
 				<fieldset class="nobg">
 					<label for="language"><span id="lang-slg">Select language:</span></label>&nbsp;<select id="language" name="language" onclick="load_languages()"><option value="en" selected="selected">English</option></select>
@@ -1634,9 +1742,10 @@ function toggle_edit(o)
 		</html>
 	</xsl:template>
 
+
 	<xsl:template name="give-header">
 		<fieldset>
-		<legend id="lang-atm">About this MOD</legend>
+			<legend id="lang-atm">About this MOD</legend>
 			<div class="mod-about">
 				<span class="corners-top"><span></span></span>
 				<dl>
@@ -1692,45 +1801,51 @@ function toggle_edit(o)
 						<xsl:call-template name="give-installation"></xsl:call-template>
 					</xsl:for-each>
 					<xsl:if test="mod:author-notes != 'N/A' and mod:author-notes != 'n/a' and mod:author-notes != ''">
-					<dt id="lang-ant" name="left4px">Author notes:</dt>
-					<dd>
-						<xsl:if test="count(mod:author-notes) > 1">
-							<dl id="author-notes" class="nopadding">
-								<xsl:for-each select="mod:author-notes">
-									<dt><xsl:value-of select="@lang" /></dt>
-									<dd lang="{@lang}">
-										<p>
-											<xsl:call-template name="add-line-breaks">
-												<xsl:with-param name="string"><xsl:value-of select="current()" /></xsl:with-param>
-											</xsl:call-template>
-										</p>
-									</dd>
-								</xsl:for-each>
-							</dl>
+						<dt id="lang-ant" name="left4px">Author notes:</dt>
+						<dd>
+							<xsl:if test="count(mod:author-notes) > 1">
+								<dl id="author-notes" class="nopadding">
+									<xsl:for-each select="mod:author-notes">
+										<dt><xsl:value-of select="@lang" /></dt>
+										<dd lang="{@lang}">
+											<p>
+												<xsl:call-template name="add-line-breaks">
+													<xsl:with-param name="string"><xsl:value-of select="current()" /></xsl:with-param>
+												</xsl:call-template>
+											</p>
+										</dd>
+									</xsl:for-each>
+								</dl>
+							</xsl:if>
+							<xsl:if test="count(mod:author-notes) = 1">
+								<p lang="{@lang}">
+									<xsl:call-template name="add-line-breaks">
+										<xsl:with-param name="string"><xsl:value-of select="mod:author-notes" /></xsl:with-param>
+									</xsl:call-template>
+								</p>
+							</xsl:if>
+						</dd>
+					</xsl:if>
+					<xsl:if test="mod:github != 'N/A' and mod:github != 'n/a' and mod:github != ''">
+						<xsl:if test="contains(mod:github, 'https://github.com/')">
+							<dt id="lang-a-git[{generate-id()}]">Github:</dt>
+							<dd name="author-dd"><a href="{mod:github}" dir="ltr"><xsl:value-of select="mod:github" /></a></dd>
 						</xsl:if>
-						<xsl:if test="count(mod:author-notes) = 1">
-							<p lang="{@lang}">
-								<xsl:call-template name="add-line-breaks">
-									<xsl:with-param name="string"><xsl:value-of select="mod:author-notes" /></xsl:with-param>
-								</xsl:call-template>
-							</p>
-						</xsl:if>
-					</dd>
 					</xsl:if>
 				</dl>
 				<span class="corners-bottom"><span></span></span>
 			</div>
 		</fieldset>
 		<fieldset>
-		<xsl:for-each select="mod:author-group">
-			<xsl:if test="count(mod:author) > 1">
-				<legend id="lang-aus">Authors</legend>
-			</xsl:if>
-			<xsl:if test="count(mod:author) = 1">
-				<legend id="lang-au">Author</legend>
-			</xsl:if>
-			<xsl:call-template name="give-authors"></xsl:call-template>
-		</xsl:for-each>
+			<xsl:for-each select="mod:author-group">
+				<xsl:if test="count(mod:author) > 1">
+					<legend id="lang-aus">Authors</legend>
+				</xsl:if>
+				<xsl:if test="count(mod:author) = 1">
+					<legend id="lang-au">Author</legend>
+				</xsl:if>
+				<xsl:call-template name="give-authors"></xsl:call-template>
+			</xsl:for-each>
 		</fieldset>
 		<xsl:if test="count(../mod:action-group/mod:open) > 0">
 			<h3 id="lang-fte">Files to edit</h3>
@@ -1745,34 +1860,42 @@ function toggle_edit(o)
 		<xsl:for-each select="../mod:action-group">
 			<xsl:call-template name="give-files-included"></xsl:call-template>
 		</xsl:for-each>
-		<h3 id="lang-addtl-modx">Additionalff MODX files</h3>
+		<h3 id="lang-addtl-modx">Additional file(s)</h3>
 		<xsl:if test="count(mod:link-group/mod:link) = 0">
-			<p id="lang-imn">This MOD has no additional MODX files.</p>
+			<p id="lang-imn">This MOD has no additional file(s).</p>
 		</xsl:if>
 
 		<ul class="link-group" id="link-group">
 			<xsl:for-each select="mod:link-group/mod:link">
 				<li lang="{@lang}">
-					<span class="link-group-lang"><xsl:value-of select="@lang" />&nbsp;</span><strong>
-						<xsl:if test="@type = 'dependency'">
-							<span id="lang-link-d">Dependency</span>:
-						</xsl:if>
-						<xsl:if test="@type = 'template'">
-							<span id="lang-link-te">Template</span>:
-						</xsl:if>
+					<span class="link-group-lang"><xsl:value-of select="@lang" />&nbsp;</span>
+					<strong>
 						<xsl:if test="@type = 'contrib'">
-							<span id="lang-link-c">Contrib</span>:
+							<span id="lang-link-c[{generate-id()}]">Contrib</span>:
+						</xsl:if>
+						<xsl:if test="@type = 'dependency'">
+							<span id="lang-link-d[{generate-id()}]">Dependency</span>:
 						</xsl:if>
 						<xsl:if test="@type = 'language'">
-							<span id="lang-link-l">Language</span>:
-						</xsl:if>
-						<xsl:if test="@type = 'template-lang'">
-							<span id="lang-link-tl">Template lang</span>:
+							<span id="lang-link-l[{generate-id()}]">Language</span>:
 						</xsl:if>
 						<xsl:if test="@type = 'parent'">
-							<span id="lang-link-p">Parent</span>:
+							<span id="lang-link-p[{generate-id()}]">Parent</span>:
 						</xsl:if>
-					</strong>&nbsp;<a href="{@href}"><xsl:value-of select="current()" /></a>
+						<xsl:if test="@type = 'template'">
+							<span id="lang-link-te[{generate-id()}]">Template</span>:
+						</xsl:if>
+						<xsl:if test="@type = 'template-lang'">
+							<span id="lang-link-tl[{generate-id()}]">Template lang</span>:
+						</xsl:if>
+						<xsl:if test="@type = 'text'">
+							<span id="lang-link-txt[{generate-id()}]">Text file</span>:
+						</xsl:if>
+						<xsl:if test="@type = 'uninstall'">
+							<span id="lang-link-un[{generate-id()}]">Uninstall instructions</span>:
+						</xsl:if>
+					</strong>
+					&nbsp;<a href="{@href}"><xsl:value-of select="current()" /></a>
 				</li>
 			</xsl:for-each>
 		</ul>
@@ -1781,16 +1904,16 @@ function toggle_edit(o)
 			<h3><span id="lang-dcl">Disclaimer</span>&nbsp;<span id="lang-ont">and other notes</span></h3>
 			<div class="mod-about">
 				<span class="corners-top"><span></span></span>
-					<div class="mod-about-padding">
-					<p><span id="lang-dclt">For security purposes, please check: <a href="http://www.phpbb.com/mods/">http://www.phpbb.com/mods/</a> for the latest version of this MOD. Downloading this MOD from other sites could cause malicious code to enter into your phpBB Forum. As such, phpBB will not offer support for MODs not offered in our MODs database, located at: <a href="http://www.phpbb.com/mods/">http://www.phpbb.com/mods/</a></span></p>
-					<p><span id="lang-ontt1">Before adding this MOD to your forum, you should back up all files related to this MOD.</span></p>
+				<div class="mod-about-padding">
+					<p><span id="lang-dclt">For security purposes, please check: <a href="https://www.phpbb.com/mods/">https://www.phpbb.com/mods/</a> for the latest version of this MOD. Downloading this MOD from other sites could cause malicious code to enter into your phpBB Forum. As such, phpBB will not offer support for MODs not offered in our MODs database, located at: <a href="https://www.phpbb.com/mods/">https://www.phpbb.com/mods/</a></span></p>
+					<p><span id="lang-ontt1">Before adding this MOD to your forum, you should back up all files and databases related to this MOD.</span></p>
 					<p><span id="lang-ontt2">This MOD was designed for phpBB</span><xsl:text> </xsl:text><xsl:value-of select="mod:installation/mod:target-version" /><xsl:text> </xsl:text>&nbsp;<span id="lang-ontt3">and may not function as stated on other phpBB versions. MODs for phpBB 3.0 will <strong>not</strong> work on phpBB 2.0 and vice versa.</span></p>
 					<xsl:for-each select="./mod:mod-version">
 						<xsl:if test="substring-before(current(), '.') = 0">
 							<p><strong class="red"><span id="lang-onttq">This MOD is development quality. It is not recommended that you install it on a live forum.</span></strong></p>
 						</xsl:if>
 					</xsl:for-each>
-					</div>
+				</div>
 				<span class="corners-bottom"><span></span></span>
 			</div>
 		</div>
@@ -1798,11 +1921,12 @@ function toggle_edit(o)
 			<h3><span id="lang-lic">License</span>&nbsp;<span id="lang-isp">and English support</span></h3>
 			<div class="mod-about">
 				<span class="corners-top"><span></span></span>
-					<div class="mod-about-padding">
+				<div class="mod-about-padding">
 					<p><span id="lang-lict">This MOD has been licensed under the following license:</span></p>
 					<p style='white-space:pre;'><a href="license.txt"><xsl:value-of select="mod:license" /></a></p>
-					<p><span id="lang-ispt">English support can be obtained at <a href="http://www.phpbb.com/mods/">http://www.phpbb.com/mods/</a> for released MODs.</span></p>
-					</div>
+					<p><span id="lang-ispt">English support can be obtained at <a href="https://www.phpbb.com/mods/">https://www.phpbb.com/mods/</a> for released MODs.</span></p>
+					<p><span id="lang-ispt-int">Support in your language <strong>might</strong> be available at a <a href="https://www.phpbb.com/support/intl/">international support site</a>.</span></p>
+				</div>
 				<span class="corners-bottom"><span></span></span>
 			</div>
 			<xsl:for-each select="mod:history">
@@ -1824,23 +1948,31 @@ function toggle_edit(o)
 								<xsl:when test="@phpbbcom = 'no' or @phpbbcom = 'No' or @phpbbcom = 'NO'">
 									<dd name="author-dd"><span dir="ltr"><xsl:value-of select="$authorname" /></span></dd>
 								</xsl:when>
+
 								<xsl:otherwise>
-									<xsl:variable name="authortemp">
-										<xsl:call-template name="replaceCharsInString">
-											<xsl:with-param name="stringIn" select="string($authorname)"/>
-											<xsl:with-param name="charsIn" select="'#'"/>
-											<xsl:with-param name="charsOut" select="'%23'"/>
-										</xsl:call-template>
-									</xsl:variable>
 									<xsl:variable name="authorurl">
-										<xsl:call-template name="replaceCharsInString">
-											<xsl:with-param name="stringIn" select="string($authortemp)"/>
-											<xsl:with-param name="charsIn" select="' '"/>
-											<xsl:with-param name="charsOut" select="'%20'"/>
+										<xsl:call-template name="validate-username">
+											<xsl:with-param name="string-in" select="string($authorname)"/>
 										</xsl:call-template>
 									</xsl:variable>
-									<dd name="author-dd"><a dir="ltr" href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&amp;un={$authorurl}"><xsl:value-of select="$authorname" /></a></dd>
+
+									<xsl:variable name="browserEngine" select="system-property('xsl:vendor')" />
+									<xsl:choose>
+										<xsl:when test="$browserEngine='Opera'">
+											<xsl:variable name="operaurl">
+												<xsl:call-template name="validate-opera">
+													<xsl:with-param name="string-in" select="string($authorurl)"/>
+												</xsl:call-template>
+											</xsl:variable>
+											<dd name="author-dd"><a dir="ltr" href="https://www.phpbb.com/community/memberlist.php?mode=viewprofile&amp;un={$operaurl}"><xsl:value-of select="$authorname" /></a></dd>
+										</xsl:when>
+										<xsl:otherwise>
+											<dd name="author-dd"><a dir="ltr" href="https://www.phpbb.com/community/memberlist.php?mode=viewprofile&amp;un={$authorurl}"><xsl:value-of select="$authorname" /></a></dd>
+										</xsl:otherwise>
+
+									</xsl:choose>
 								</xsl:otherwise>
+
 							</xsl:choose>
 						</xsl:for-each>
 						<xsl:if test="mod:email != 'N/A' and mod:email != 'n/a' and mod:email != ''">
@@ -2033,7 +2165,7 @@ function toggle_edit(o)
 						<option value="mssql">MSSQL</option>
 						<option value="oracle">Oracle</option>
 						<option value="postgres">Postgres</option>
-						<option value="sqllite">SQLLite</option>
+						<option value="sqlite">SQLite</option>
 					</select>
 				</fieldset>
 			</form>
@@ -2043,23 +2175,49 @@ function toggle_edit(o)
 					<xsl:for-each select="mod:sql">
 						<xsl:call-template name="give-sql"></xsl:call-template>
 					</xsl:for-each>
-				<span class="corners-bottom"><span></span></span></div>
+				<span class="corners-bottom"><span></span></span>
+			</div>
 		</xsl:if>
 		<xsl:if test="count(mod:copy) > 0">
 			<xsl:for-each select="mod:copy">
 				<xsl:call-template name="give-filez"></xsl:call-template>
 			</xsl:for-each>
 		</xsl:if>
+		<xsl:if test="count(mod:delete) > 0">
+			<xsl:for-each select="mod:delete">
+				<xsl:call-template name="away-filez"></xsl:call-template>
+			</xsl:for-each>
+		</xsl:if>
 		<xsl:if test="count(mod:open) > 0">
-		<h2 id="lang-edts">Edits</h2>
-		<p><span class="key">s</span><span class="key">w</span><span class="key">x</span><span id="lang-edtt">Use your keyboard to navigate the code boxes. You may also hit '<em>s</em>' on your keyboard to go to the first code box.</span></p>
-		<div id="edits">
-			<div class="inner">
-				<xsl:for-each select="mod:open">
-					<xsl:call-template name="give-fileo"></xsl:call-template>
-				</xsl:for-each>
+			<h2 id="lang-edts">Edits</h2>
+			<p><span class="key">s</span><span class="key">w</span><span class="key">x</span><span id="lang-edtt">Use your keyboard to navigate the code boxes. You may also hit '<em>s</em>' on your keyboard to go to the first code box.</span></p>
+			<div id="edits">
+				<div class="inner">
+					<xsl:for-each select="mod:open">
+						<xsl:call-template name="give-fileo"></xsl:call-template>
+					</xsl:for-each>
+				</div>
 			</div>
-		</div>
+		</xsl:if>
+		<xsl:if test="count(mod:php-installer) > 0">
+			<h2 id="lang-installer-h2">PHP install file</h2>
+			<div class="mod-about">
+				<span class="corners-top"><span></span></span>
+					<div class="mod-about-padding">
+						<p>
+							<span id="lang-installer-exp1">There is a PHP install file that needs to be run in order to complete the installation.</span>
+							<br />
+							<span id="lang-installer-exp2">To run it point your browser to, for example,</span><span dir="ltr"> domain.tld/phpBB3/<xsl:value-of select="mod:php-installer" /></span>
+						</p>
+						<div class="content">
+							<div class="codebox">
+								<div class="codeHead"><span id="lang-cde-c[{generate-id()}]">Code:</span><a href="#" onclick="select_code(this); return false;" class="codeSelect"><span id="lang-cde-sa[{generate-id()}]">Select All</span></a></div>
+								<div class="codePre"><pre id="{generate-id()}" dir="ltr"><xsl:value-of select="mod:php-installer" /></pre></div>
+							</div>
+						</div>
+					</div>
+				<span class="corners-bottom"><span></span></span>
+			</div>
 		</xsl:if>
 		<xsl:call-template name="give-manual" />
 	</xsl:template>
@@ -2126,12 +2284,12 @@ function toggle_edit(o)
 								</dl>
 							</div>
 						</xsl:if>
-						<xsl:for-each select="mod:find|mod:action|mod:inline-edit">
+						<xsl:for-each select="mod:find|mod:remove|mod:action|mod:inline-edit">
 							<xsl:if test="name() = 'find'">
 								<h4 id="lang-fnd[{generate-id()}]">Find</h4>
 								<p><span id="lang-fndt[{generate-id()}]"><strong>Tip:</strong> This may be a partial find and not the whole line.</span>
 									<xsl:if test="@type = 'regex'">
-										<br /><em id="lang-regex[{generate-id()}]">This find contains an advanced feature known as regular expressions, click here to learn more.</em>
+										<br /><em id="lang-regex[{generate-id()}]">This find contains an advanced feature known as regular expressions.</em>
 									</xsl:if>
 								</p>
 								<div class="codebox">
@@ -2139,22 +2297,30 @@ function toggle_edit(o)
 									<div class="codePre"><pre id="{generate-id()}" dir="ltr"><xsl:value-of select="current()" /></pre></div>
 								</div>
 							</xsl:if>
+							<xsl:if test="name() = 'remove'">
+								<h4 id="lang-remove[{generate-id()}]" style="color: #FF0FFF;">Find and Delete</h4>
+								<p><span id="lang-removet[{generate-id()}]"><strong>Tip:</strong>  Find and delete this code.</span></p>
+								<div class="codebox">
+									<div class="codeHead"><span id="lang-cde-c[{generate-id()}]">Code:</span><a href="#" onclick="select_code(this); return false;" class="codeSelect"><span id="lang-cde-sa[{generate-id()}]">Select All</span></a></div>
+									<div class="codePre"><pre id="{generate-id()}" dir="ltr"><xsl:value-of select="current()" /></pre></div>
+								</div>
+							</xsl:if>
 							<xsl:if test="name() = 'action'">
 								<xsl:if test="@type = 'after-add'">
-									<h4 id="lang-aft[{generate-id()}]">Add after</h4>
+									<h4 id="lang-aft[{generate-id()}]" style="color: #009933;">Add after</h4>
 									<p><span id="lang-aftt[{generate-id()}]"><strong>Tip:</strong> Add these lines on a new blank line after the preceding line(s) to find.</span></p>
 								</xsl:if>
 								<xsl:if test="@type = 'before-add'">
-									<h4 id="lang-bef[{generate-id()}]">Add before</h4>
+									<h4 id="lang-bef[{generate-id()}]" style="color: #AC1987;">Add before</h4>
 									<p><span id="lang-beft[{generate-id()}]"><strong>Tip:</strong> Add these lines on a new blank line before the preceding line(s) to find.</span></p>
 								</xsl:if>
 								<xsl:if test="@type = 'replace-with'">
-									<h4 id="lang-rplw[{generate-id()}]">Replace with</h4>
+									<h4 id="lang-rplw[{generate-id()}]" style="color: #AE1616;">Replace with</h4>
 									<p><span id="lang-rplwt[{generate-id()}]"><strong>Tip:</strong> Replace the preceding line(s) to find with the following lines.</span></p>
 								</xsl:if>
 								<xsl:if test="@type = 'operation'">
-									<h4 id="lang-inc[{generate-id()}]">Increment</h4>
-									<p><span id="lang-inct[{generate-id()}]"><strong>Tip:</strong> This allows you to alter integers. For help on what each operator means, click here.</span></p>
+									<h4 id="lang-inc[{generate-id()}]" style="color: #333333;">Operation</h4>
+									<p><span id="lang-inct[{generate-id()}]"><strong>Tip:</strong> This allows you to alter integers.</span></p>
 								</xsl:if>
 								<div class="codebox">
 									<div class="codeHead"><span id="lang-cde-c[{generate-id()}]">Code:</span><a href="#" onclick="select_code(this); return false;" class="codeSelect"><span id="lang-cde-sa[{generate-id()}]">Select all</span></a></div>
@@ -2163,12 +2329,12 @@ function toggle_edit(o)
 							</xsl:if>
 							<xsl:if test="name() = 'inline-edit'">
 								<div class="mod-inlineedit">
-									<xsl:for-each select="mod:inline-find|mod:inline-action|mod:inline-comment">
+									<xsl:for-each select="mod:inline-find|mod:inline-remove|mod:inline-action|mod:inline-comment">
 										<xsl:if test="name() = 'inline-find'">
 											<h5 id="lang-ifnd[{generate-id()}]">In-line Find</h5>
 											<p><span id="lang-ifndt[{generate-id()}]"><strong>Tip:</strong> This is a partial match of a line for in-line operations.</span>
 												<xsl:if test="@type = 'regex'">
-													<br /><em id="lang-regex[{generate-id()}]">This find contains an advanced feature known as regular expressions, click here to learn more.</em>
+													<br /><em id="lang-regex[{generate-id()}]">This find contains an advanced feature known as regular expressions.</em>
 												</xsl:if>
 											</p>
 											<div class="codebox">
@@ -2176,22 +2342,30 @@ function toggle_edit(o)
 												<div class="codePre"><pre id="{generate-id()}" dir="ltr"><xsl:value-of select="current()" /></pre></div>
 											</div>
 										</xsl:if>
+										<xsl:if test="name() = 'inline-remove'">
+											<h5 id="lang-iremove[{generate-id()}]" style="color: #FF0FFF;">In-line Find and Delete</h5>
+											<p><span id="lang-iremovet[{generate-id()}]"><strong>Tip:</strong> Find this code in the line and delete it.</span></p>
+											<div class="codebox">
+												<div class="codeHead"><span id="lang-cde-c[{generate-id()}]">Code:</span><a href="#" onclick="select_code(this); return false;" class="codeSelect"><span id="lang-cde-sa[{generate-id()}]">Select all</span></a></div>
+												<div class="codePre"><pre id="{generate-id()}" dir="ltr"><xsl:value-of select="current()" /></pre></div>
+											</div>
+										</xsl:if>
 										<xsl:if test="name() = 'inline-action'">
 											<xsl:if test="@type = 'after-add'">
-												<h5 id="lang-iaft[{generate-id()}]">In-line Add after</h5>
+												<h5 id="lang-iaft[{generate-id()}]" style="color: #009933;">In-line Add after</h5>
 												<p><span id="lang-iaftt[{generate-id()}]"></span></p>
 											</xsl:if>
 											<xsl:if test="@type = 'before-add'">
-												<h5 id="lang-ibef[{generate-id()}]">In-line Add before</h5>
+												<h5 id="lang-ibef[{generate-id()}]" style="color: #AC1987;">In-line Add before</h5>
 												<p><span id="lang-ibeft[{generate-id()}]"></span></p>
 											</xsl:if>
 											<xsl:if test="@type = 'replace-with'">
-												<h5 id="lang-irplw[{generate-id()}]">In-line Replace with</h5>
+												<h5 id="lang-irplw[{generate-id()}]" style="color: #AE1616;">In-line Replace with</h5>
 												<p><span id="lang-irplwt[{generate-id()}]"></span></p>
 											</xsl:if>
 											<xsl:if test="@type = 'operation'">
-												<h5 id="lang-iinc[{generate-id()}]">In-line Increment</h5>
-												<p><span id="lang-iinct[{generate-id()}]"><strong>Tip:</strong> This allows you to alter integers. For help on what each operator means, click here.</span></p>
+												<h5 id="lang-iinc[{generate-id()}]" style="color: #333333;">In-line Operation</h5>
+												<p><span id="lang-iinct[{generate-id()}]"><strong>Tip:</strong> This allows you to alter integers.</span></p>
 											</xsl:if>
 											<div class="codebox">
 												<div class="codeHead"><span id="lang-cde-c[{generate-id()}]">Code:</span><a href="#" onclick="select_code(this); return false;" class="codeSelect"><span id="lang-cde-sa[{generate-id()}]">Select All</span></a></div>
@@ -2231,6 +2405,26 @@ function toggle_edit(o)
 		</ol>
 	</xsl:template>
 
+	<xsl:template name="away-filez">
+		<xsl:choose>
+			<xsl:when test="count(mod:file) > 1">
+				<h2 id="lang-del-heads">Delete files</h2>
+			</xsl:when>
+			<xsl:otherwise>
+				<h2 id="lang-del-head">Delete file</h2>
+			</xsl:otherwise>
+		</xsl:choose>
+		<ol id="file-delete">
+			<xsl:for-each select="mod:file">
+				<li>
+					<dl>
+						<dt><span id="lang-del-file[{generate-id()}]">Delete:</span>&nbsp;<xsl:value-of select="@name" /></dt>
+					</dl>
+				</li>
+			</xsl:for-each>
+		</ol>
+	</xsl:template>
+
 	<!-- add-line-breaks borrowed from http://www.stylusstudio.com/xsllist/200103/post40180.html -->
 	<xsl:template name="add-line-breaks">
 		<xsl:param name="string" select="." />
@@ -2263,6 +2457,281 @@ function toggle_edit(o)
 				<xsl:value-of select="$stringIn"/>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+
+	<!-- Replace some chars -->
+	<xsl:template name="validate-username">
+		<xsl:param name="string-in"/>
+
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+
+		<xsl:call-template name="replaceCharsInString">
+			<xsl:with-param name="stringIn" select="string($string-in)"/>
+			<xsl:with-param name="charsIn" select="'#'"/>
+			<xsl:with-param name="charsOut" select="'%23'"/>
+		</xsl:call-template>
+
+		</xsl:with-param><xsl:with-param name="charsIn" select="'&amp;'"/><xsl:with-param name="charsOut" select="'%26'"/></xsl:call-template> <!-- & -->
+		</xsl:with-param><xsl:with-param name="charsIn" select="'+'"/><xsl:with-param name="charsOut" select="'%2B'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="' '"/><xsl:with-param name="charsOut" select="'%20'"/></xsl:call-template> <!-- space -->
+	</xsl:template>
+
+	<!-- This is only needed for Opera support, hiding it here at the bottom. -->
+	<xsl:template name="validate-opera">
+		<xsl:param name="string-in"/>
+
+		<!-- This doesn't follow any coding guidelines. But is easier to read this way -->
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+		<xsl:call-template name="replaceCharsInString"><xsl:with-param name="stringIn">
+
+		<xsl:call-template name="replaceCharsInString">
+			<xsl:with-param name="stringIn" select="string($string-in)"/>
+			<xsl:with-param name="charsIn" select="'é'"/>
+			<xsl:with-param name="charsOut" select="'%C3%A9'"/>
+		</xsl:call-template>
+
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ÿ'"/><xsl:with-param name="charsOut" select="'%C3%BF'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'þ'"/><xsl:with-param name="charsOut" select="'%C3%BE'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ý'"/><xsl:with-param name="charsOut" select="'%C3%BD'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ü'"/><xsl:with-param name="charsOut" select="'%C3%BC'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'û'"/><xsl:with-param name="charsOut" select="'%C3%BB'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ú'"/><xsl:with-param name="charsOut" select="'%C3%BA'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ù'"/><xsl:with-param name="charsOut" select="'%C3%B9'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ø'"/><xsl:with-param name="charsOut" select="'%C3%B8'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'÷'"/><xsl:with-param name="charsOut" select="'%C3%B7'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ö'"/><xsl:with-param name="charsOut" select="'%C3%B6'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'õ'"/><xsl:with-param name="charsOut" select="'%C3%B5'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ô'"/><xsl:with-param name="charsOut" select="'%C3%B4'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ó'"/><xsl:with-param name="charsOut" select="'%C3%B3'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ò'"/><xsl:with-param name="charsOut" select="'%C3%B2'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ñ'"/><xsl:with-param name="charsOut" select="'%C3%B1'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ð'"/><xsl:with-param name="charsOut" select="'%C3%B0'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ï'"/><xsl:with-param name="charsOut" select="'%C3%AF'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'î'"/><xsl:with-param name="charsOut" select="'%C3%AE'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'í'"/><xsl:with-param name="charsOut" select="'%C3%AD'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ì'"/><xsl:with-param name="charsOut" select="'%C3%AC'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ë'"/><xsl:with-param name="charsOut" select="'%C3%AB'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ê'"/><xsl:with-param name="charsOut" select="'%C3%AA'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'é'"/><xsl:with-param name="charsOut" select="'%C3%A9'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'è'"/><xsl:with-param name="charsOut" select="'%C3%A8'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ç'"/><xsl:with-param name="charsOut" select="'%C3%A7'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'æ'"/><xsl:with-param name="charsOut" select="'%C3%A6'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'å'"/><xsl:with-param name="charsOut" select="'%C3%A5'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ä'"/><xsl:with-param name="charsOut" select="'%C3%A4'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ã'"/><xsl:with-param name="charsOut" select="'%C3%A3'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'â'"/><xsl:with-param name="charsOut" select="'%C3%A2'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'á'"/><xsl:with-param name="charsOut" select="'%C3%A1'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'à'"/><xsl:with-param name="charsOut" select="'%C3%A0'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ß'"/><xsl:with-param name="charsOut" select="'%C3%9F'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Þ'"/><xsl:with-param name="charsOut" select="'%C3%9E'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ý'"/><xsl:with-param name="charsOut" select="'%C3%9D'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ü'"/><xsl:with-param name="charsOut" select="'%C3%9C'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Û'"/><xsl:with-param name="charsOut" select="'%C3%9B'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ú'"/><xsl:with-param name="charsOut" select="'%C3%9A'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ù'"/><xsl:with-param name="charsOut" select="'%C3%99'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ø'"/><xsl:with-param name="charsOut" select="'%C3%98'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'×'"/><xsl:with-param name="charsOut" select="'%C3%97'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ö'"/><xsl:with-param name="charsOut" select="'%C3%96'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Õ'"/><xsl:with-param name="charsOut" select="'%C3%95'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ô'"/><xsl:with-param name="charsOut" select="'%C3%94'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ó'"/><xsl:with-param name="charsOut" select="'%C3%93'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ò'"/><xsl:with-param name="charsOut" select="'%C3%92'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ñ'"/><xsl:with-param name="charsOut" select="'%C3%91'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ð'"/><xsl:with-param name="charsOut" select="'%C3%90'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ï'"/><xsl:with-param name="charsOut" select="'%C3%8F'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Î'"/><xsl:with-param name="charsOut" select="'%C3%8E'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Í'"/><xsl:with-param name="charsOut" select="'%C3%8D'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ì'"/><xsl:with-param name="charsOut" select="'%C3%8C'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ë'"/><xsl:with-param name="charsOut" select="'%C3%8B'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ê'"/><xsl:with-param name="charsOut" select="'%C3%8A'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'É'"/><xsl:with-param name="charsOut" select="'%C3%89'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'È'"/><xsl:with-param name="charsOut" select="'%C3%88'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ç'"/><xsl:with-param name="charsOut" select="'%C3%87'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Æ'"/><xsl:with-param name="charsOut" select="'%C3%86'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Å'"/><xsl:with-param name="charsOut" select="'%C3%85'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ä'"/><xsl:with-param name="charsOut" select="'%C3%84'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ã'"/><xsl:with-param name="charsOut" select="'%C3%83'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Â'"/><xsl:with-param name="charsOut" select="'%C3%82'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Á'"/><xsl:with-param name="charsOut" select="'%C3%81'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'À'"/><xsl:with-param name="charsOut" select="'%C3%80'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¿'"/><xsl:with-param name="charsOut" select="'%C2%BF'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¾'"/><xsl:with-param name="charsOut" select="'%C2%BE'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'½'"/><xsl:with-param name="charsOut" select="'%C2%BD'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¼'"/><xsl:with-param name="charsOut" select="'%C2%BC'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'»'"/><xsl:with-param name="charsOut" select="'%C2%BB'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'º'"/><xsl:with-param name="charsOut" select="'%C2%BA'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¹'"/><xsl:with-param name="charsOut" select="'%C2%B9'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¸'"/><xsl:with-param name="charsOut" select="'%C2%B8'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'·'"/><xsl:with-param name="charsOut" select="'%C2%B7'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¶'"/><xsl:with-param name="charsOut" select="'%C2%B6'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'µ'"/><xsl:with-param name="charsOut" select="'%C2%B5'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'´'"/><xsl:with-param name="charsOut" select="'%C2%B4'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'³'"/><xsl:with-param name="charsOut" select="'%C2%B3'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'²'"/><xsl:with-param name="charsOut" select="'%C2%B2'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'±'"/><xsl:with-param name="charsOut" select="'%C2%B1'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'°'"/><xsl:with-param name="charsOut" select="'%C2%B0'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¯'"/><xsl:with-param name="charsOut" select="'%C2%AF'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'®'"/><xsl:with-param name="charsOut" select="'%C2%AE'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¬'"/><xsl:with-param name="charsOut" select="'%C2%AC'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'«'"/><xsl:with-param name="charsOut" select="'%C2%AB'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ª'"/><xsl:with-param name="charsOut" select="'%C2%AA'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'©'"/><xsl:with-param name="charsOut" select="'%C2%A9'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¨'"/><xsl:with-param name="charsOut" select="'%C2%A8'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'§'"/><xsl:with-param name="charsOut" select="'%C2%A7'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¦'"/><xsl:with-param name="charsOut" select="'%C2%A6'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¥'"/><xsl:with-param name="charsOut" select="'%C2%A5'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¤'"/><xsl:with-param name="charsOut" select="'%C2%A4'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'£'"/><xsl:with-param name="charsOut" select="'%C2%A3'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¢'"/><xsl:with-param name="charsOut" select="'%C2%A2'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'¡'"/><xsl:with-param name="charsOut" select="'%C2%A1'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ÿ'"/><xsl:with-param name="charsOut" select="'%C5%B8'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ž'"/><xsl:with-param name="charsOut" select="'%C5%BE'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'œ'"/><xsl:with-param name="charsOut" select="'%C5%93'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'›'"/><xsl:with-param name="charsOut" select="'%E2%80%BA'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'š'"/><xsl:with-param name="charsOut" select="'%C5%A1'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'™'"/><xsl:with-param name="charsOut" select="'%E2%84%A2'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'˜'"/><xsl:with-param name="charsOut" select="'%CB%9C'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'—'"/><xsl:with-param name="charsOut" select="'%E2%80%94'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'–'"/><xsl:with-param name="charsOut" select="'%E2%80%93'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'•'"/><xsl:with-param name="charsOut" select="'%E2%80%A2'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'”'"/><xsl:with-param name="charsOut" select="'%E2%80%9D'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'“'"/><xsl:with-param name="charsOut" select="'%E2%80%9C'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'’'"/><xsl:with-param name="charsOut" select="'%E2%80%99'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'‘'"/><xsl:with-param name="charsOut" select="'%E2%80%98'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Ž'"/><xsl:with-param name="charsOut" select="'%C5%BD'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Œ'"/><xsl:with-param name="charsOut" select="'%C5%92'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'‹'"/><xsl:with-param name="charsOut" select="'%E2%80%B9'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'Š'"/><xsl:with-param name="charsOut" select="'%C5%A0'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'‰'"/><xsl:with-param name="charsOut" select="'%E2%80%B0'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ˆ'"/><xsl:with-param name="charsOut" select="'%CB%86'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'‡'"/><xsl:with-param name="charsOut" select="'%E2%80%A1'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'†'"/><xsl:with-param name="charsOut" select="'%E2%80%A0'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'…'"/><xsl:with-param name="charsOut" select="'%E2%80%A6'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'„'"/><xsl:with-param name="charsOut" select="'%E2%80%9E'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'ƒ'"/><xsl:with-param name="charsOut" select="'%C6%92'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'‚'"/><xsl:with-param name="charsOut" select="'%E2%80%9A'"/></xsl:call-template>
+		</xsl:with-param><xsl:with-param name="charsIn" select="'€'"/><xsl:with-param name="charsOut" select="'%E2%82%AC'"/></xsl:call-template>
 	</xsl:template>
 
 </xsl:stylesheet>
