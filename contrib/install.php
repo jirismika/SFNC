@@ -22,7 +22,9 @@ $user->setup();
 $sql_array = array();
 
 // this release version info
-$version = '0.4.0b';
+$version = '0.4.0c';
+
+define ('SFNC_FEEDS_OLD', $table_prefix . 'smixmods_feed_news_center');
 
 // determine the best possible function
 if (function_exists('simplexml_load_file'))
@@ -40,7 +42,7 @@ elseif (function_exists('fopen'))
 else
 {
     // TODO add lang file string
-    trigger_error('Not usable PHP function for downloading the feed - simplexml, cURL or fopen is required to run this .MOD and none was d', E_USER_ERROR);
+    trigger_error('No usable PHP function found - simplexml, cURL or fopen is required to run this .MOD and none was d', E_USER_ERROR);
 }
 
 
@@ -75,9 +77,12 @@ if (isset($config['sfnc_version']))
 
 		if ($config['sfnc_version'] < '0.4.0a')
 		{
-			$sql_array[] = 'ALTER TABLE ' . SFNC_FEEDS . '
-							CHANGE available_feed_atributes available_feed_attributes varchar(255) NOT NULL DEFAULT \'\' AFTER last_update,
-							CHANGE available_item_atributes available_item_attributes varchar(255) NOT NULL DEFAULT \'\' AFTER available_feed_attributes;';
+			$sql_array[] = array(
+				'RENAME TABLE ' . SFNC_FEEDS_OLD . ' TO ' . SFNC_FEEDS,
+				'ALTER TABLE ' . SFNC_FEEDS . '
+						CHANGE available_feed_atributes available_feed_attributes varchar(255) NOT NULL DEFAULT \'\' AFTER last_update,
+						CHANGE available_item_atributes available_item_attributes varchar(255) NOT NULL DEFAULT \'\' AFTER available_feed_attributes;'
+			);
 		}
 
 
