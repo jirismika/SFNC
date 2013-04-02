@@ -77,12 +77,10 @@ if (isset($config['sfnc_version']))
 
 		if ($config['sfnc_version'] < '0.4.0a')
 		{
-			$sql_array[] = array(
-				'RENAME TABLE ' . SFNC_FEEDS_OLD . ' TO ' . SFNC_FEEDS,
-				'ALTER TABLE ' . SFNC_FEEDS . '
+			$sql_array[] =	'RENAME TABLE ' . SFNC_FEEDS_OLD . ' TO ' . SFNC_FEEDS;
+			$sql_array[] =	'ALTER TABLE ' . SFNC_FEEDS . '
 						CHANGE available_feed_atributes available_feed_attributes varchar(255) NOT NULL DEFAULT \'\' AFTER last_update,
-						CHANGE available_item_atributes available_item_attributes varchar(255) NOT NULL DEFAULT \'\' AFTER available_feed_attributes;'
-			);
+						CHANGE available_item_atributes available_item_attributes varchar(255) NOT NULL DEFAULT \'\' AFTER available_feed_attributes;';
 		}
 
 
