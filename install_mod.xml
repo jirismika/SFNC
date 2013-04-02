@@ -9,7 +9,7 @@
 		<title lang="en"><![CDATA[SmiX.MODs Feed News Center]]></title>
 		<description lang="en"><![CDATA[Creates RSS & ATOM feeds input to your board - posts content into forums, shows news as ticking news block ...]]></description>
 		<author-notes lang="en"><![CDATA[This mod is formerly known as lastRSS agregator & lastRSS autoposting bot .MODs. Both were merged, reworked and lastRSS parser class is not used anymore.]]></author-notes>
-		<author-notes lang="en"><![CDATA[If you are using previous version (lover than 0.4.0), remove .MOD from ACP at first, than delete existing files and drop existing database tables (changed). Existing settings will be lost.]]></author-notes>
+		<author-notes lang="en"><![CDATA[If you are using previous version (lover than 0.4.0), remove .MOD from ACP at first and than delete existing files.]]></author-notes>
 		<github><![CDATA[https://github.com/jirismika/SFNC]]></github>
 		<author-group>
 			<author>
