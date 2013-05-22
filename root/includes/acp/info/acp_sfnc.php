@@ -20,14 +20,14 @@ class acp_sfnc_info
 		return array(
 			'filename' => 'sfnc',
 			'title' => 'ACP_SFNC',
-			'version' => '0.4.0',
+			'version' => '0.4.1',
 			'modes' => array(
 				'manage' => array(
 					'title' => 'ACP_SFNC_FEEDS',
 					'auth' => 'acl_a_board',
 					'cat' => array('ACP_SFNC')),
 				'config' => array(
-					'title' => 'ACP_GENERAL_CONFIGURATION',
+					'title' => 'ACP_SFNC_GENERALCONFIG',
 					'auth' => 'acl_a_board',
 					'cat' => array('ACP_SFNC')
 				),

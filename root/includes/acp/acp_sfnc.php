@@ -8,6 +8,14 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
+ /**
+* @ignore
+*/
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}
+
 class acp_sfnc
 {
 
@@ -241,7 +249,7 @@ class acp_sfnc
 						$template->assign_vars(array(
 							// main info
 							'FEED_ID' => $id,
-							'FEED_NAME' => isset($list[$id]['feed_name']) ? $list[$id]['feed_name'] : '',
+							'FEED_NAME' => isset($list[$id]['feed_name']) ? $list[$id]['feed_name'].$default_function : '',
 							'FEED_TYPE' => isset($list[$id]['feed_type']) ? $list[$id]['feed_type'] : '',
 							'URL' => isset($list[$id]['url']) ? $list[$id]['url'] : '',
 							'ENABLED_POSTING' => isset($list[$id]['enabled_posting']) ? $list[$id]['enabled_posting'] : '',

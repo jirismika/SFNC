@@ -9,9 +9,16 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
-/**
- * DO NOT CHANGE
- */
+ 
+ /**
+* @ignore
+*/
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}
+
+// Create the lang array if it does not already exist
 if (empty($lang) || !is_array($lang))
 {
 	$lang = array();
@@ -33,6 +40,7 @@ $lang = array_merge($lang, array(
 	// titles
 	'ACP_SFNC' => 'SmiX.MODs Feed News Center',
 	'ACP_SFNC_FEEDS' => 'Feeds list',
+	'ACP_SFNC_GENERALCONFIG' => 'Feed Configuration',
 	'ACP_SFNC_FEEDS_DESCRIPTION' => 'There you can choose a feed to edit, delete or add a new one.',
 	'ACP_SFNC_ADD_NEW' => 'ADD new feed',
 	'ACP_SFNC_BASIC' => 'Basic settings',

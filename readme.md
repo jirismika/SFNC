@@ -5,17 +5,23 @@ Creates RSS & ATOM feeds input to your board - posts content into forums, shows 
 ##Warning : 
 This MOD is development quality. It is not recommended that you install it on a live forum.
 
-###Features:
+####Version
+0.4.1 (branch umil installer)
 
+#### changelog 0.4.1
+- added Umil installer for automated database and module installation from within automod (Sajaki). 
+- removed old installer (Sajaki). 
+
+###Features:
 ####Parses:
-	*RSS
-	*ATOM
-	*RDF
+ * RSS
+ * ATOM
+ * RDF
+
 Automatically posts new items from feeds
 CRON mode
 ACP
 Different poster for different feeds
-
 
 Displays news from the feeds in block above forums (NOT FINISHED - will be introduced in next versions)
 

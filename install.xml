@@ -8,8 +8,19 @@
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[SmiX.MODs Feed News Center]]></title>
 		<description lang="en"><![CDATA[Creates RSS & ATOM feeds input to your board - posts content into forums, shows news as ticking news block ...]]></description>
-		<author-notes lang="en"><![CDATA[This mod is formerly known as lastRSS agregator & lastRSS autoposting bot .MODs. Both were merged, reworked and lastRSS parser class is not used anymore.]]></author-notes>
-		<author-notes lang="en"><![CDATA[If you are using previous version (lover than 0.4.0), remove .MOD from ACP at first and than delete existing files.]]></author-notes>
+		<author-notes lang="en"><![CDATA[This mod is formerly known as lastRSS agregator & lastRSS autoposting bot .MODs. Both were merged, reworked and lastRSS parser class is not used anymore.
+		
+		If you are using a previous version (lover than 0.4.0), remove .MOD from ACP at first and than delete existing files.
+		
+		* Manual install : After copying the files in their place and editing all templates, run /install/index.php and press install.
+
+		* install with Automod : unzip SFNC-0.4.1.zip and copy SFNC-0.4.1 folder to /store/mods, then go to your Automod panel in ACP and press install. then you will see a green bar on top with a link to /install/index.php. Please click it to be forwarded to the database installer, then click Install again. 
+
+    	* Configuration : browse to ACP > .MODs > SmiX.MODs Feed News Center and set up everything as you want.
+
+Required ACP permissions are Board administration ...
+
+		]]></author-notes>
 		<github><![CDATA[https://github.com/jirismika/SFNC]]></github>
 		<author-group>
 			<author>
@@ -18,8 +29,14 @@
 				<homepage><![CDATA[phpBB3.smika.net]]></homepage>
 				<email><![CDATA[dev@smika.net]]></email>
 			</author>
+			<author>
+				<realname><![CDATA[Andreas Vandeneberghe]]></realname>
+				<username><![CDATA[Sajaki]]></username>
+				<homepage><![CDATA[bbdkp.com]]></homepage>
+				<email><![CDATA[sajaki@bbdkp.com]]></email>
+			</author>
 		</author-group>
-		<mod-version>0.4.0</mod-version>
+		<mod-version>0.4.1</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>300</time>
@@ -29,11 +46,13 @@
 	<action-group>
 		<copy>
 			<file from="root/adm/style/acp_sfnc.html" to="adm/style/acp_sfnc.html"/>
+			<file from="root/install/*.*" to="install/*.*"/>
 			<file from="root/includes/acp/info/acp_sfnc.php" to="includes/acp/info/acp_sfnc.php"/>
 			<file from="root/includes/acp/acp_sfnc.php" to="includes/acp/acp_sfnc.php"/>
 			<file from="root/includes/mods/sfnc/sfnc.class.php" to="includes/mods/sfnc/sfnc.class.php"/>
 			<file from="root/language/en/mods/info_acp_sfnc.php" to="language/en/mods/info_acp_sfnc.php"/>
 			<file from="root/sfnc_update.php" to="sfnc_update.php"/>
+			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
 		<open src="common.php">
 			<edit>
@@ -64,16 +83,12 @@ define('SFNC_FEEDS', $table_prefix . 'sfnc_feeds');
 // SmiX.MODs feed news center [-]]]></action>
 			</edit>
 		</open>
-		<php-installer><![CDATA[/contrib/install.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[After editing all templates, copy file contrib/install.php to contrib/install.php.
-After running the install.php script you can delete the contrib directory.
-    Navigate to:
-    Administration Control Panel > System > Module Management :: Administration Control Panel > .MODs and create a Category for modules.
-    Select “Feeds list” (SmiX.MODs Feed News Center) from the Module drop-down menu and click “Go”.
-    Then click “Enable” on the Module.
-    Do it again and select “General configuration” from the Module drop-down menu and click “Go”.
-    Then click “Enable” on the Module.
-    Browse to ACP > .MODs > Created category and set up everything as you want ...
+		<php-installer><![CDATA[install/index.php]]></php-installer>
+		<diy-instructions lang="en"><![CDATA[* Manual install : After copying the files in their place and editing all templates, run /install/index.php and press install.
+
+		* install with Automod : unzip SFNC-0.4.1.zip and copy SFNC-0.4.1 folder to /store/mods, then go to your Automod panel in ACP and press install. then you will see a green bar on top with a link to /install/index.php. Please click it to be forwarded to the database installer, then click Install again. 
+
+    	Configuration : browse to ACP > .MODs > SmiX.MODs Feed News Center and set up everything as you want.
 
 Required ACP permissions are Board administration ...]]></diy-instructions>
 	</action-group>
