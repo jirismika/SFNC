@@ -273,7 +273,6 @@ class sfnc
 	/**
 	 * Is downloaded feed in RSS format?
 	 *
-	 * @param xml object $xml
 	 * @return bool
 	 */
 	private function is_rss()
@@ -311,7 +310,6 @@ class sfnc
 	/**
 	 * Is downloaded feed in RDF format?
 	 *
-	 * @param xml object $xml
 	 * @return bool
 	 */
 	private function is_rdf()
@@ -349,7 +347,6 @@ class sfnc
 	/**
 	 * Is downloaded feed in ATOM format?
 	 *
-	 * @param xml object $xml
 	 * @return bool
 	 */
 	private function is_atom()
